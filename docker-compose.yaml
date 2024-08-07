@@ -1,0 +1,13 @@
+# Compose Mysql sercice
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-sgi
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sgi-db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
