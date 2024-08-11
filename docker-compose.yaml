@@ -1,13 +1,14 @@
-# Compose Mysql sercice
+## Compose para Postgres
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-sgi
+  sgi-postgres:
+    image: postgres:15.3-alpine
+    container_name: sgi-postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sgi-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sgi
     ports:
-      - 3306:3306
+      - 5432:5432
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./data/postgres:/var/lib/postgresql/data

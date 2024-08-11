@@ -11,7 +11,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto) {
     try {
       const product = await this.product.create({
         data: createProductDto,
@@ -28,7 +28,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAllProducts(paginationDto: PaginationDto) {
     try {
       const { page = 1, limit = 10 } = paginationDto;
 
@@ -58,7 +58,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async findOne(id: Product['id']) {
+  async findOneProduct(id: Product['id']) {
     try {
       const product = await this.product.findUnique({
         where: {
@@ -78,7 +78,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async update(id: Product['id'], updateProductDto: UpdateProductDto) {
+  async updateProduct(id: Product['id'], updateProductDto: UpdateProductDto) {
     try {
       const product = await this.product.update({
         where: {
@@ -97,7 +97,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async remove(id: Product['id']) {
+  async removeProduct(id: Product['id']) {
     try {
       const product = await this.product.update({
         where: {
