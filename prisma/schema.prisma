@@ -14,12 +14,17 @@ datasource db {
 }
 
 model Product {
-  id String @id @default(uuid())
-  name String
-  price Int
+  id          String   @id @default(uuid())
+  name        String
+  buy_price   Int
+  sell_price  Int
+  stock       Int
   description String
-  image String
-  category String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  image       String
+  available   Boolean  @default(true)
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([available])
 }

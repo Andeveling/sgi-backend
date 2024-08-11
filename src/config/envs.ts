@@ -5,11 +5,13 @@ interface EnvVars {
   HOST: string;
   PORT: number;
   DATABASE_URL: string;
+  ORIGIN: string;
 }
 const envsSchema = Joi.object<EnvVars>({
   HOST: Joi.string().required(),
   PORT: Joi.number().required(),
   DATABASE_URL: Joi.string().required(),
+  ORIGIN: Joi.string().required(),
 }).unknown(true);
 
 const { error, value } = envsSchema.validate(process.env);
@@ -24,4 +26,5 @@ export const envs = {
   host: envVars.HOST,
   port: envVars.PORT,
   databaseUrl: envVars.DATABASE_URL,
+  origin: envVars.ORIGIN,
 };

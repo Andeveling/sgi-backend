@@ -9,7 +9,13 @@ export class CreateProductDto {
   @IsPositive()
   @Min(1)
   @Type(() => Number)
-  public price: number;
+  public buy_price: number;
+
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  @Type(() => Number)
+  public sell_price: number;
 
   @IsString()
   public description: string;
@@ -19,4 +25,10 @@ export class CreateProductDto {
 
   @IsString()
   public category: string;
+
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  @Type(() => Number)
+  public stock: number;
 }
