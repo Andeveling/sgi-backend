@@ -1,8 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { ErrorManager } from 'src/utils/error.manager';
-import { HashingService } from 'src/auth/hashing.service';
+import { HashingService } from 'src/auth/services/hashing.service';
 
 @Injectable()
 export class UsersService extends PrismaClient implements OnModuleInit {

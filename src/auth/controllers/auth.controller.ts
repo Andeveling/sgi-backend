@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { HashingService } from './hashing.service';
+import { AuthService } from '../services/auth.service';
+import { HashingService } from '../services/hashing.service';
 
 @Controller('auth')
 export class AuthController {
