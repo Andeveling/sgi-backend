@@ -1,9 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaClient, Product } from '@prisma/client';
 import { PaginationDto } from 'src/common';
-import { ErrorManager } from 'src/utils/error.manager';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -17,14 +21,11 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         data: createProductDto,
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
@@ -34,10 +35,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       const totalProducts = await this.product.count();
       if (totalProducts === 0) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No products found',
-        });
+        throw new HttpException('No products found', HttpStatus.NOT_FOUND);
       }
       const totalPages = Math.ceil(totalProducts / limit);
       const currentPage = page / limit + 1;
@@ -54,7 +52,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         current: currentPage,
       };
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
@@ -67,14 +65,11 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
@@ -87,13 +82,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         data: updateProductDto,
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
@@ -108,14 +100,11 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 }
