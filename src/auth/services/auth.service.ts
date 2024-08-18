@@ -11,6 +11,7 @@ import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { HashingService } from './hashing.service';
 import { TokenAccess, PayloadToken } from '../interfaces';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -52,18 +53,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     try {
-      const payload: PayloadToken = {
-        sub: user.id,
-        roles: user.roles,
-      };
-
-      const accessToken = await this.jwtService.signAsync(payload);
-
-      const accessTokenObject: TokenAccess = {
-        accessToken: `Bearer ${accessToken}`,
-      };
-
-      return accessTokenObject;
+      const userWithOutPassword = { ...user, password: undefined };
+      const accessToken = await this.generateJWTToken(userWithOutPassword);
+      return accessToken;
     } catch (error) {
       if (
         error instanceof NotFoundException ||
@@ -85,11 +77,21 @@ export class AuthService {
         pass,
         password,
       );
-      if (comparePassword) {
-        return result;
-      }
+      if (comparePassword) return result;
     } else {
       return null;
     }
+  }
+
+  private async generateJWTToken(user: User) {
+    const payload: PayloadToken = {
+      sub: user.id,
+      roles: user.roles,
+    };
+    const accessToken = await this.jwtService.signAsync(payload);
+    const accessTokenObject: TokenAccess = {
+      accessToken: `Bearer ${accessToken}`,
+    };
+    return accessTokenObject;
   }
 }

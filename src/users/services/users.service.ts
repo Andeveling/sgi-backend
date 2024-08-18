@@ -30,7 +30,7 @@ export class UsersService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async findOneUserByEmail(email: User['email']): Promise<User> {
+  public async findOneUserByEmail(email: User['email']): Promise<User> {
     return await this.user.findUnique({
       where: {
         email: email,

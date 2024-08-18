@@ -5,10 +5,12 @@ import { HashingService } from './services/hashing.service';
 import { UsersService } from 'src/users/services/users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { envs } from 'src/config';
-import { LocalStrategy } from './local.strategy';
+import { JwtStrategy, LocalStrategy } from './strategies';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule,
     JwtModule.register({
       global: true,
       secret: envs.secret,
@@ -16,6 +18,12 @@ import { LocalStrategy } from './local.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, HashingService, UsersService, LocalStrategy],
+  providers: [
+    AuthService,
+    HashingService,
+    UsersService,
+    LocalStrategy,
+    JwtStrategy,
+  ],
 })
 export class AuthModule {}
