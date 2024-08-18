@@ -10,6 +10,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { HashingService } from './hashing.service';
+import { TokenAccess, PayloadToken } from '../interfaces';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +37,7 @@ export class AuthService {
       return successMessage;
     } catch (error) {
       if (error instanceof ConflictException) {
-        throw error; // Lanzar la excepción específica con un mensaje al cliente
+        throw error;
       }
       throw new InternalServerErrorException(
         'An unexpected error occurred while registering the user.',
@@ -44,44 +45,51 @@ export class AuthService {
     }
   }
 
-  public async login(
-    loginDto: LoginDto,
-  ): Promise<{ accessToken: `Bearer ${string}` }> {
+  public async login(loginDto: LoginDto): Promise<TokenAccess> {
     const { email, password } = loginDto;
+    const user = await this.validateUser({ email, pass: password });
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
     try {
-      const user = await this.userService.findOneUserByEmail(email);
-
-      if (!user) {
-        throw new NotFoundException('No user found with the provided email');
-      }
-
-      const comparePassword = await this.hashingService.comparePassword(
-        password,
-        user.password,
-      );
-      if (!comparePassword) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      const payload = {
+      const payload: PayloadToken = {
         sub: user.id,
-        username: user.name,
-        email: user.email,
+        roles: user.roles,
       };
 
       const accessToken = await this.jwtService.signAsync(payload);
 
-      return { accessToken: `Bearer ${accessToken}` };
+      const accessTokenObject: TokenAccess = {
+        accessToken: `Bearer ${accessToken}`,
+      };
+
+      return accessTokenObject;
     } catch (error) {
       if (
         error instanceof NotFoundException ||
         error instanceof UnauthorizedException
       ) {
-        throw error; // Relanzar excepciones específicas para que el cliente reciba el mensaje adecuado
+        throw error;
       }
       throw new InternalServerErrorException(
         'An unexpected error occurred during login. Please try again later.',
       );
+    }
+  }
+
+  public async validateUser({ email, pass }: { email: string; pass: string }) {
+    const user = await this.userService.findOneUserByEmail(email);
+    if (user) {
+      const { password, ...result } = user;
+      const comparePassword = await this.hashingService.comparePassword(
+        pass,
+        password,
+      );
+      if (comparePassword) {
+        return result;
+      }
+    } else {
+      return null;
     }
   }
 }

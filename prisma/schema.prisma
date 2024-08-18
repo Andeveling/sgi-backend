@@ -18,18 +18,17 @@ enum Role {
   USER
   ADMIN
 }
+
 model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
   available Boolean  @default(true)
-  role      Role     @default(USER)
+  roles     Role[]   @default([USER])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-
 
 model Product {
   id          String   @id @default(uuid())
