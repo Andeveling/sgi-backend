@@ -1,22 +1,14 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Request } from '@nestjs/common';
 import { Public } from '../decorators/public';
 import { RegisterDto } from '../dto/register.dto';
 import { AuthService } from '../services/auth.service';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @UseGuards(AuthGuard('local'))
+  // @UseGuards(AuthGuard('local'))
   @Public()
   public login(@Body() req: { email: string; password: string }) {
     const { email, password } = req;
