@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { envs } from './config/envs';
+import { AllExceptionFilter } from './core/errors/all-exeption.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -21,6 +22,9 @@ async function bootstrap() {
   app.enableCors({
     origin: envs.origin,
   });
+
+  // Filtro de excepciones
+  app.useGlobalFilters(new AllExceptionFilter());
 
   await app.listen(envs.port, () => {
     logger.log(`Application is running on port ${envs.port}`);
