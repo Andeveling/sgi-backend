@@ -51,7 +51,7 @@ model Store {
 model Category {
   id          String    @id @default(uuid())
   name        String
-  description String
+  description String?
   available   Boolean   @default(true)
   products    Product[]
   createdAt   DateTime  @default(now())
