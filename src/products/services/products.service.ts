@@ -1,9 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaClient, Product } from '@prisma/client';
 import { PaginationDto } from 'src/common';
-import { ErrorManager } from 'src/utils/error.manager';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -11,33 +15,27 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto) {
     try {
       const product = await this.product.create({
         data: createProductDto,
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAllProducts(paginationDto: PaginationDto) {
     try {
       const { page = 1, limit = 10 } = paginationDto;
 
       const totalProducts = await this.product.count();
       if (totalProducts === 0) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No products found',
-        });
+        throw new HttpException('No products found', HttpStatus.NOT_FOUND);
       }
       const totalPages = Math.ceil(totalProducts / limit);
       const currentPage = page / limit + 1;
@@ -54,11 +52,11 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         current: currentPage,
       };
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
-  async findOne(id: Product['id']) {
+  async findOneProduct(id: Product['id']) {
     try {
       const product = await this.product.findUnique({
         where: {
@@ -67,18 +65,15 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
-  async update(id: Product['id'], updateProductDto: UpdateProductDto) {
+  async updateProduct(id: Product['id'], updateProductDto: UpdateProductDto) {
     try {
       const product = await this.product.update({
         where: {
@@ -87,17 +82,14 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         data: updateProductDto,
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 
-  async remove(id: Product['id']) {
+  async removeProduct(id: Product['id']) {
     try {
       const product = await this.product.update({
         where: {
@@ -108,14 +100,11 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!product) {
-        throw new ErrorManager({
-          type: 'NOT_FOUND',
-          message: 'No product found',
-        });
+        throw new HttpException('No product found', HttpStatus.NOT_FOUND);
       }
       return product;
     } catch (error) {
-      throw new ErrorManager.createSignatureError(error.message);
+      throw new Error(error);
     }
   }
 }

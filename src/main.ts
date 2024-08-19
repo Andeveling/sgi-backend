@@ -29,6 +29,7 @@ async function bootstrap() {
   await app.listen(envs.port, () => {
     logger.log(`Application is running on port ${envs.port}`);
     logger.log(`Origin: ${envs.origin}`);
+    logger.log(`url: http://localhost:${envs.port}/api`);
   });
 }
 bootstrap();
