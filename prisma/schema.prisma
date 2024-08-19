@@ -13,12 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Modulo para Usuarios, Autenticacion, Roles etc...
-enum Role {
-  USER
-  ADMIN
-}
-
+// User model
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -28,20 +23,115 @@ model User {
   roles     Role[]   @default([USER])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([available])
 }
 
+// Store model
+model Store {
+  id            String     @id @default(uuid())
+  name          String
+  description   String     @db.VarChar(500)
+  image         String
+  address       String
+  location      String
+  opening_hours DateTime
+  closing_hours DateTime
+  phoneNumber   String
+  email         String
+  status        StatusEnum
+  available     Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([available])
+}
+
+// Category model
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  available   Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([available])
+}
+
+// Product model
 model Product {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   buy_price   Int
   sell_price  Int
-  stock       Int
-  description String
+  stock       Int       @default(0)
+  description String?   @db.VarChar(500)
   image       String
-  available   Boolean  @default(true)
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  available   Boolean   @default(true)
+  category_id String?
+  category    Category? @relation(fields: [category_id], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([available])
+}
+
+// Supplier model
+model Supplier {
+  id             String       @id @default(uuid())
+  name           String
+  description    String?      @db.VarChar(500)
+  available      Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  contactInfo_id String?      @unique
+  contactInfo    ContactInfo? @relation(fields: [contactInfo_id], references: [id])
+
+  @@index([available])
+}
+
+// Employee model
+model Employee {
+  id             String       @id @default(uuid())
+  name           String
+  description    String?      @db.VarChar(500)
+  available      Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  contactInfo_id String?      @unique
+  contactInfo    ContactInfo? @relation(fields: [contactInfo_id], references: [id])
+
+  @@index([available])
+}
+
+// ContactInfo model
+model ContactInfo {
+  id        String    @id @default(uuid())
+  phone     String? // Número de teléfono para llamadas
+  whatsapp  String? // Número de WhatsApp
+  available Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  supplier  Supplier?
+  employee  Employee?
+}
+
+// Stock de productos
+enum MovementType {
+  INCOMING // Entrada de stock
+  OUTGOING // Salida de stock (ventas)
+}
+
+// Enums
+enum StatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
+// Modulo para Usuarios, Autenticacion, Roles etc...
+enum Role {
+  USER
+  ADMIN
 }
