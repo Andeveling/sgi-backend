@@ -1,4 +1,4 @@
-import { IPagination } from 'prisma/src/interfaces/pagination.interface';
+import { IPagination } from 'src/interfaces/pagination.interface';
 
 export class Pagination {
   private totalItems: number;

@@ -1,9 +1,9 @@
-import { ErrorHandler } from 'prisma/src/core/errors/error.handler';
+import { ErrorHandler } from 'src/core/errors/error.handler';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient, Product } from '@prisma/client';
-import { PaginationDto } from 'prisma/src/common';
-import { CreateProductDto } from 'prisma/src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'prisma/src/products/dto/update-product.dto';
+import { PaginationDto } from 'src/common';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import {
   GetAllResponse,
   GetOneResponse,
@@ -11,8 +11,8 @@ import {
   RemoveResponse,
   StatusResponse,
   UpdateResponse,
-} from 'prisma/src/interfaces/api-response.interface';
-import { Pagination } from 'prisma/src/common/entities/pagination.entity';
+} from 'src/interfaces/api-response.interface';
+import { Pagination } from 'src/common/entities/pagination.entity';
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {

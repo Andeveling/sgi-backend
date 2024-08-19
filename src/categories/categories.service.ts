@@ -9,10 +9,10 @@ import {
   RemoveResponse,
   StatusResponse,
   UpdateResponse,
-} from 'prisma/src/interfaces/api-response.interface';
-import { PaginationDto } from 'prisma/src/common';
-import { Pagination } from 'prisma/src/common/entities/pagination.entity';
-import { ErrorHandler } from 'prisma/src/core/errors/error.handler';
+} from 'src/interfaces/api-response.interface';
+import { PaginationDto } from 'src/common';
+import { Pagination } from 'src/common/entities/pagination.entity';
+import { ErrorHandler } from 'src/core/errors/error.handler';
 
 @Injectable()
 export class CategoriesService extends PrismaClient implements OnModuleInit {

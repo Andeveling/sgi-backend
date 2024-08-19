@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { envs } from 'prisma/src/config';
+import { envs } from 'src/config';
 import { PayloadToken } from '../interfaces';
 
 @Injectable()
