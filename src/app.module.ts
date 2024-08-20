@@ -4,10 +4,22 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { StoreModule } from './store/store.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AllExceptionFilter } from './core/errors/all-exeption.filter';
 
 @Module({
-  imports: [UsersModule, AuthModule, StoreModule, ProductsModule, CategoriesModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    StoreModule,
+    ProductsModule,
+    CategoriesModule,
+  ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'APP_FILTER',
+      useClass: AllExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
