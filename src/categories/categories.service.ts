@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Category, PrismaClient } from '@prisma/client';
+import { PaginationDto } from 'src/common';
+import { Pagination } from 'src/common/entities/pagination.entity';
+import { ErrorHandler } from 'src/core/errors/error.handler';
 import {
   GetAllResponse,
   GetOneResponse,
@@ -10,9 +10,8 @@ import {
   StatusResponse,
   UpdateResponse,
 } from 'src/interfaces/api-response.interface';
-import { PaginationDto } from 'src/common';
-import { Pagination } from 'src/common/entities/pagination.entity';
-import { ErrorHandler } from 'src/core/errors/error.handler';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService extends PrismaClient implements OnModuleInit {
@@ -34,12 +33,20 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
 
   public async findAll(
     paginationDto: PaginationDto,
-  ): Promise<GetAllResponse<Category>> {
+  ): Promise<GetAllResponse<Omit<Category, 'available'>>> {
     const { limit, offset } = paginationDto;
     try {
       const categories = await this.category.findMany({
+        where: { available: true },
         take: limit,
         skip: offset,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
       const totalItems = await this.category.count();
       if (totalItems === 0) ErrorHandler.notFound('No categories found');
@@ -56,10 +63,19 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  public async findOne(id: Category['id']): Promise<GetOneResponse<Category>> {
+  public async findOne(
+    id: Category['id'],
+  ): Promise<GetOneResponse<Omit<Category, 'available'>>> {
     try {
       const category = await this.category.findUnique({
         where: { id },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
       return {
         status: StatusResponse.Success,
@@ -74,12 +90,19 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
   public async update(
     id: Category['id'],
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<UpdateResponse<Category>> {
+  ): Promise<UpdateResponse<Omit<Category, 'available'>>> {
     const { name, description } = updateCategoryDto;
     try {
       const category = await this.category.update({
         where: { id },
         data: { name, description },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
       return {
         status: StatusResponse.Success,
@@ -96,6 +119,7 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
       const category = await this.category.update({
         where: { id },
         data: { available: false },
+        select: { id: true },
       });
       return {
         status: StatusResponse.Success,
