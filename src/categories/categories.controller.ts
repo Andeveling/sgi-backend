@@ -7,17 +7,14 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
+import { Category } from '@prisma/client';
+import { PaginationDto } from 'src/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Category } from '@prisma/client';
-import { PaginationDto } from 'src/common';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('categories')
-@UseGuards(AuthGuard('jwt'))
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

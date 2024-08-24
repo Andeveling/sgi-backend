@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { StoreModule } from './store/store.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AllExceptionFilter } from './core/errors/all-exeption.filter';
+import { JwtAuthGuard } from './auth/guards';
 
 @Module({
   imports: [
@@ -16,6 +17,10 @@ import { AllExceptionFilter } from './core/errors/all-exeption.filter';
   ],
   controllers: [],
   providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: JwtAuthGuard,
+    },
     {
       provide: 'APP_FILTER',
       useClass: AllExceptionFilter,

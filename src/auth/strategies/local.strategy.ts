@@ -15,7 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       pass: password,
     });
     if (!user) {
-      console.log('Usuario no encontrado o credenciales inválidas');
       throw new UnauthorizedException('Credenciales inválidas');
     }
     return user;
