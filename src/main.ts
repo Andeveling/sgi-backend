@@ -4,6 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { envs } from './config/envs';
 import { AllExceptionFilter } from './core/errors/all-exeption.filter';
 import helmet from 'helmet';
+import csurf from 'csurf';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -15,6 +16,9 @@ async function bootstrap() {
    * ataques basados en cabeceras HTTP
    */
   app.use(helmet());
+
+  // somewhere in your initialization file
+  app.use(csurf());
 
   // Es un prefijo para todas las rutas
   app.setGlobalPrefix('api');
