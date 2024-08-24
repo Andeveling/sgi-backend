@@ -16,8 +16,8 @@ import { Product } from '@prisma/client';
 import { ProductsService } from 'src/products/services/products.service';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('products')
 @UseGuards(AuthGuard('jwt'))
+@Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 

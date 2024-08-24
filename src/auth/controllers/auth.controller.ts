@@ -18,7 +18,6 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   public login(@Body() req: { email: string; password: string }) {
     const { email, password } = req;
-    console.log('Aca estoy entrando al login');
     return this.authService.login({ email, password });
   }
 
