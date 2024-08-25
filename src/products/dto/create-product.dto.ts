@@ -1,55 +1,46 @@
 import {
   IsString,
-  IsNumber,
-  IsPositive,
-  Min,
+  IsInt,
   IsOptional,
+  IsPositive,
+  IsDate,
+  Min,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-
-// id          String    @id @default(uuid())
-// name        String
-// buy_price   Int
-// sell_price  Int
-// stock       Int       @default(0)
-// description String?   @db.VarChar(500)
-// image       String
-// available   Boolean   @default(true)
-// category_id String?
-// category    Category? @relation(fields: [category_id], references: [id])
-// createdAt   DateTime  @default(now())
-// updatedAt   DateTime  @updatedAt
 
 export class CreateProductDto {
   @IsString()
-  public name: string;
+  name: string;
 
-  @IsNumber()
+  @IsInt()
   @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public buy_price: number;
+  buyPrice: number;
 
-  @IsNumber()
+  @IsInt()
   @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public sell_price: number;
+  sellPrice: number;
+
+  @IsInt()
+  @Min(0)
+  stock: number;
 
   @IsString()
   @IsOptional()
-  public description: string;
+  description?: string;
 
-  @IsString()
-  public image: string;
+  @IsDate()
+  @IsOptional()
+  expiration?: Date;
+
+  @IsInt()
+  @IsOptional()
+  @Min(0)
+  minStock?: number;
 
   @IsString()
   @IsOptional()
-  public category_id?: string | null;
+  categoryId?: string;
 
-  @IsNumber()
-  @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public stock: number;
+  @IsString()
+  @IsOptional()
+  storeId?: string;
 }

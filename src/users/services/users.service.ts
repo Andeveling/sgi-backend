@@ -13,12 +13,13 @@ export class UsersService extends PrismaClient implements OnModuleInit {
   }
 
   async createUser(createUserDto: CreateUserDto) {
-    const { email, password, name } = createUserDto;
+    const { email, password, name, cellphone } = createUserDto;
     try {
       await this.user.create({
         data: {
           name,
           email,
+          cellphone,
           password,
         },
       });

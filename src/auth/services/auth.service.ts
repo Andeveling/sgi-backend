@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   public async register(registerDto: RegisterDto) {
-    const { email, password, name } = registerDto;
+    const { email, password, name, cellphone } = registerDto;
     try {
       const findUser = await this.userService.findOneUserByEmail(email);
       if (findUser) {
@@ -34,6 +34,7 @@ export class AuthService {
         email,
         password: hashedPassword,
         name,
+        cellphone,
       });
       return successMessage;
     } catch (error) {
@@ -87,6 +88,8 @@ export class AuthService {
     const payload: PayloadToken = {
       sub: user.id,
       roles: user.roles,
+      email: user.email,
+      cellphone: user.cellphone,
     };
     const accessToken = await this.jwtService.signAsync(payload);
     const accessTokenObject: TokenAccess = {

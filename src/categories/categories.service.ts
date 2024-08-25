@@ -20,10 +20,13 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
   }
 
   public async create(createCategoryDto: CreateCategoryDto) {
-    const { name, description } = createCategoryDto;
+    const { storeId, name } = createCategoryDto;
     try {
       const category = await this.category.create({
-        data: { name, description },
+        data: {
+          name,
+          storeId: storeId,
+        },
       });
       return category;
     } catch (error) {
@@ -33,17 +36,15 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
 
   public async findAll(
     paginationDto: PaginationDto,
-  ): Promise<GetAllResponse<Omit<Category, 'available'>>> {
+  ): Promise<GetAllResponse<Omit<Category, 'storeId'>>> {
     const { limit, offset } = paginationDto;
     try {
       const categories = await this.category.findMany({
-        where: { available: true },
         take: limit,
         skip: offset,
         select: {
           id: true,
           name: true,
-          description: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -65,14 +66,13 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
 
   public async findOne(
     id: Category['id'],
-  ): Promise<GetOneResponse<Omit<Category, 'available'>>> {
+  ): Promise<GetOneResponse<Omit<Category, 'storeId'>>> {
     try {
       const category = await this.category.findUnique({
         where: { id },
         select: {
           id: true,
           name: true,
-          description: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -90,16 +90,15 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
   public async update(
     id: Category['id'],
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<UpdateResponse<Omit<Category, 'available'>>> {
-    const { name, description } = updateCategoryDto;
+  ): Promise<UpdateResponse<Omit<Category, 'storeId'>>> {
+    const { name, storeId } = updateCategoryDto;
     try {
       const category = await this.category.update({
-        where: { id },
-        data: { name, description },
+        where: { id, storeId },
+        data: { name, storeId },
         select: {
           id: true,
           name: true,
-          description: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -116,11 +115,7 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
 
   public async remove(id: Category['id']): Promise<RemoveResponse> {
     try {
-      const category = await this.category.update({
-        where: { id },
-        data: { available: false },
-        select: { id: true },
-      });
+      const category = await this.category.delete({ where: { id } });
       return {
         status: StatusResponse.Success,
         message: 'Category deleted successfully',

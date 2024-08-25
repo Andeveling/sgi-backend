@@ -1,6 +1,8 @@
-import { User } from '@prisma/client';
+import { $Enums, User } from '@prisma/client';
 
 export interface PayloadToken {
   sub: User['id'];
-  roles: User['roles'];
+  roles: $Enums.Role[];
+  email: User['email'];
+  cellphone: User['cellphone'];
 }

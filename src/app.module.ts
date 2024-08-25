@@ -1,25 +1,28 @@
 import { Module } from '@nestjs/common';
-import { ProductsModule } from './products/products.module';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { StoreModule } from './store/store.module';
-import { CategoriesModule } from './categories/categories.module';
-import { AllExceptionFilter } from './core/errors/all-exeption.filter';
 import { JwtAuthGuard } from './auth/guards';
+import { RolesGuard } from './auth/guards/roles/roles.guard';
+import { AllExceptionFilter } from './core/errors/all-exeption.filter';
+import { StoreModule } from './store/store.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     StoreModule,
-    ProductsModule,
-    CategoriesModule,
+    // ProductsModule,
+    // CategoriesModule,
   ],
   controllers: [],
   providers: [
     {
       provide: 'APP_GUARD',
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: RolesGuard,
     },
     {
       provide: 'APP_FILTER',

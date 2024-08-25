@@ -1,4 +1,5 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ErrorHandler } from '@/core/errors/error.handler';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../services/auth.service';
@@ -15,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       pass: password,
     });
     if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw ErrorHandler.unauthorized('Invalid credentials');
     }
     return user;
   }

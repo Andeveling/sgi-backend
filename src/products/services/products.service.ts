@@ -22,9 +22,30 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
   public async createProduct(
     createProductDto: CreateProductDto,
   ): Promise<PostResponse<Product>> {
+    const {
+      storeId,
+      name,
+      buyPrice,
+      sellPrice,
+      stock,
+      description,
+      expiration,
+      minStock,
+      categoryId,
+    } = createProductDto;
     try {
       const product = await this.product.create({
-        data: createProductDto,
+        data: {
+          name,
+          buyPrice,
+          sellPrice,
+          stock,
+          description,
+          expiration,
+          minStock,
+          categoryId,
+          storeId,
+        },
       });
       if (!product) {
         ErrorHandler.notFound('No product found');
@@ -49,7 +70,6 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       const pagination = new Pagination({ limit, offset, totalItems });
 
       const products = await this.product.findMany({
-        where: { available: true },
         skip: offset,
         take: limit,
       });
@@ -71,7 +91,6 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       const product = await this.product.findUnique({
         where: {
           id: id,
-          available: true,
         },
       });
       if (!product) {
@@ -113,16 +132,8 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
   public async removeProduct(id: Product['id']): Promise<RemoveResponse> {
     try {
-      const product = await this.product.update({
-        where: {
-          id: id,
-        },
-        data: {
-          available: false,
-        },
-      });
+      const product = await this.product.delete({ where: { id } });
       if (!product) ErrorHandler.notFound('No product found');
-
       return {
         status: StatusResponse.Success,
         message: 'Product deleted successfully',

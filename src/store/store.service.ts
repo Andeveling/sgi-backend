@@ -1,26 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class StoreService {
-  create(createStoreDto: CreateStoreDto) {
-    return 'This action adds a new store';
+  public async create(createStoreDto: CreateStoreDto) {
+    // try {
+    //   const store = await this.store.create({
+    //     data: createStoreDto,
+    //   });
+    //   return store;
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 
-  findAll() {
+  public async findAll() {
     return `This action returns all store`;
   }
 
-  findOne(id: number) {
+  public async findOne(id: number) {
     return `This action returns a #${id} store`;
   }
 
-  update(id: number, updateStoreDto: UpdateStoreDto) {
+  public async update(id: number, updateStoreDto: UpdateStoreDto) {
     return `This action updates a #${id} store`;
   }
 
-  remove(id: number) {
+  public async remove(id: number) {
     return `This action removes a #${id} store`;
   }
 }

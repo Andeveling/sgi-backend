@@ -36,4 +36,10 @@ export class ErrorHandler extends Error {
   public static badRequest(message: string) {
     throw new HttpException(message, HttpStatus.BAD_REQUEST);
   }
+  public static forbidden(message: string) {
+    throw new HttpException(message, HttpStatus.FORBIDDEN);
+  }
+  public static unauthorized(message: string) {
+    throw new HttpException(message, HttpStatus.UNAUTHORIZED);
+  }
 }

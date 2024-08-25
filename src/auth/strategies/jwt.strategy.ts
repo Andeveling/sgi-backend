@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { envs } from 'src/config';
 import { PayloadToken } from '../interfaces';
+import { ErrorHandler } from '@/core/errors/error.handler';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -15,6 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   public validate(payload: PayloadToken): PayloadToken {
+    const { roles } = payload;
+    if (!roles) {
+      throw ErrorHandler.forbidden('Forbidden access');
+    }
     return payload;
   }
 }

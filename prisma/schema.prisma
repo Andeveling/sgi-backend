@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,125 +7,161 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  available Boolean  @default(true)
-  roles     Role[]   @default([USER])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([available])
-}
-
-// Store model
-model Store {
-  id            String     @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
-  description   String     @db.VarChar(500)
-  image         String
-  address       String
-  location      String
-  opening_hours DateTime
-  closing_hours DateTime
+  email         String         @unique
+  cellphone     String         @unique
+  password      String
+  roles         Role[]         @default([USER])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[] // Este campo es para las notificaciones de usuarios al inicio es un array vacio
+  storeId       String?
+  store         Store?         @relation(fields: [storeId], references: [id])
+
+  @@map("users")
+}
+
+model Store {
+  id            String         @id @default(uuid())
+  name          String
+  description   String?
   phoneNumber   String
-  email         String
   status        StatusEnum
-  available     Boolean    @default(true)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  Invoice       Invoice[]
+  categories    Category[]
+  notifications Notification[]
+  products      Product[]
+  users         User[]
 
-  @@index([available])
+  @@map("stores")
 }
 
-// Category model
 model Category {
-  id          String    @id @default(uuid())
-  name        String
-  description String?
-  available   Boolean   @default(true)
-  products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([available])
-}
-
-// Product model
-model Product {
-  id          String    @id @default(uuid())
-  name        String
-  buy_price   Int
-  sell_price  Int
-  stock       Int       @default(0)
-  description String?   @db.VarChar(500)
-  image       String
-  available   Boolean   @default(true)
-  category_id String?
-  category    Category? @relation(fields: [category_id], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([available])
-}
-
-// Supplier model
-model Supplier {
-  id             String       @id @default(uuid())
-  name           String
-  description    String?      @db.VarChar(500)
-  available      Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  contactInfo_id String?      @unique
-  contactInfo    ContactInfo? @relation(fields: [contactInfo_id], references: [id])
-
-  @@index([available])
-}
-
-// Employee model
-model Employee {
-  id             String       @id @default(uuid())
-  name           String
-  description    String?      @db.VarChar(500)
-  available      Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  contactInfo_id String?      @unique
-  contactInfo    ContactInfo? @relation(fields: [contactInfo_id], references: [id])
-
-  @@index([available])
-}
-
-// ContactInfo model
-model ContactInfo {
   id        String    @id @default(uuid())
-  phone     String? // Número de teléfono para llamadas
-  whatsapp  String? // Número de WhatsApp
-  available Boolean   @default(true)
+  name      String
+  storeId   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  supplier  Supplier?
-  employee  Employee?
+  store     Store     @relation(fields: [storeId], references: [id])
+  products  Product[]
+
+  @@map("categories")
 }
 
-// Stock de productos
-enum MovementType {
-  INCOMING // Entrada de stock
-  OUTGOING // Salida de stock (ventas)
+model Product {
+  id          String     @id @default(uuid())
+  name        String
+  buyPrice    Int
+  sellPrice   Int
+  stock       Int        @default(0)
+  description String?
+  expiration  DateTime?
+  minStock    Int?
+  categoryId  String
+  storeId     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  movements   Movement[]
+  category    Category   @relation(fields: [categoryId], references: [id])
+  store       Store?     @relation(fields: [storeId], references: [id])
+
+  @@map("products")
 }
 
-// Enums
+model Movement {
+  id        String       @id @default(uuid())
+  type      MovementType
+  quantity  Int
+  productId String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  product   Product      @relation(fields: [productId], references: [id])
+
+  @@map("movements")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  storeId   String
+  userId    String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  store     Store            @relation(fields: [storeId], references: [id])
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+model Expense {
+  id          String   @id
+  description String
+  amount      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model Income {
+  id          String   @id
+  description String
+  amount      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model Invoice {
+  id            String        @id
+  invoiceNumber String        @unique
+  date          DateTime      @default(now())
+  totalAmount   Int
+  storeId       String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime
+  stores        Store         @relation(fields: [storeId], references: [id])
+  InvoiceItem   InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String  @id
+  description String
+  quantity    Int
+  price       Int
+  invoiceId   String
+  Invoice     Invoice @relation(fields: [invoiceId], references: [id])
+}
+
 enum StatusEnum {
   ACTIVE
   INACTIVE
 }
 
-// Modulo para Usuarios, Autenticacion, Roles etc...
 enum Role {
   USER
+  VENDOR
+  STOCK_MANAGER
   ADMIN
+  SUPER_ADMIN
+}
+
+enum MovementType {
+  PURCHASE
+  RETURN
+  TRANSFER_IN
+  SALE
+  DEFECTIVE
+  TRANSFER_OUT
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
 }
