@@ -17,7 +17,7 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[] // Este campo es para las notificaciones de usuarios al inicio es un array vacio
-  storeId       String?
+  storeId       String?        @unique // Aquí aseguramos que cada usuario solo tenga una tienda
   store         Store?         @relation(fields: [storeId], references: [id])
 
   @@map("users")
@@ -27,8 +27,8 @@ model Store {
   id            String         @id @default(uuid())
   name          String
   description   String?
-  phoneNumber   String
-  status        StatusEnum
+  cellphone     String
+  status        StatusEnum     @default(ACTIVE)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   Invoice       Invoice[]
