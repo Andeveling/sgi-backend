@@ -16,26 +16,28 @@ model User {
   roles         Role[]         @default([USER])
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  notifications Notification[] // Este campo es para las notificaciones de usuarios al inicio es un array vacio
-  storeId       String?        @unique // Aquí aseguramos que cada usuario solo tenga una tienda
+  notifications Notification[]
+  storeId       String?        @unique
   store         Store?         @relation(fields: [storeId], references: [id])
 
   @@map("users")
 }
 
 model Store {
-  id            String         @id @default(uuid())
-  name          String
-  description   String?
-  cellphone     String
-  status        StatusEnum     @default(ACTIVE)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  cellphone   String
+  status      StatusEnum @default(ACTIVE)
+
   Invoice       Invoice[]
   categories    Category[]
   notifications Notification[]
   products      Product[]
   users         User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("stores")
 }
@@ -62,12 +64,12 @@ model Product {
   expiration  DateTime?
   minStock    Int?
   categoryId  String
-  storeId     String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   movements   Movement[]
   category    Category   @relation(fields: [categoryId], references: [id])
-  store       Store?     @relation(fields: [storeId], references: [id])
+  storeId     String
+  store       Store      @relation(fields: [storeId], references: [id])
 
   @@map("products")
 }

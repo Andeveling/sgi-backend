@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient, Store } from '@prisma/client';
+import { PrismaClient, Store, User } from '@prisma/client';
 import { UsersService } from '@/users/services/users.service';
 import { CreateStoreDto } from '../dto/create-store.dto';
 import { UpdateStoreDto } from '../dto/update-store.dto';
@@ -16,7 +16,7 @@ export class StoreService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  @Roles('ADMIN')
+  @Roles('USER')
   public async create(userId: string, createStoreDto: CreateStoreDto) {
     try {
       // Validamos si el usuario tiene una tienda
@@ -44,19 +44,61 @@ export class StoreService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  public async findAll() {
-    return `This action returns all store`;
-  }
+  public async findOne(userId: User['id']) {
+    try {
+      const user = await this.usersService.findOneById(userId);
 
-  public async findOne(id: Store['id']) {
-    return `This action returns a #${id} store`;
+      if (!user) {
+        throw ErrorHandler.createSignatureError('User not found');
+      }
+
+      const store = await this.store.findUnique({
+        where: {
+          id: user.storeId,
+        },
+      });
+
+      if (!store) {
+        throw ErrorHandler.createSignatureError('Store not found');
+      }
+      return store;
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async update(id: Store['id'], updateStoreDto: UpdateStoreDto) {
-    return `This action updates a #${id} store`;
+    try {
+      const store = await this.store.update({
+        where: {
+          id,
+        },
+        data: updateStoreDto,
+      });
+
+      return {
+        message: 'Store updated successfully',
+        store,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async remove(id: Store['id']) {
-    return `This action removes a #${id} store`;
+    try {
+      const store = await this.store.delete({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        message: 'Store deleted successfully',
+        store,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

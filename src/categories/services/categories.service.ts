@@ -10,8 +10,8 @@ import {
   StatusResponse,
   UpdateResponse,
 } from 'src/interfaces/api-response.interface';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService extends PrismaClient implements OnModuleInit {

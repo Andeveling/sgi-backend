@@ -5,14 +5,15 @@ import { RolesGuard } from './auth/guards/roles/roles.guard';
 import { AllExceptionFilter } from './core/errors/all-exeption.filter';
 import { StoreModule } from './store/store.module';
 import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     StoreModule,
+    CategoriesModule,
     // ProductsModule,
-    // CategoriesModule,
   ],
   controllers: [],
   providers: [

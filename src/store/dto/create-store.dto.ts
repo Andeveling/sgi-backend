@@ -9,6 +9,6 @@ export class CreateStoreDto {
   description?: string;
 
   @IsString()
-  @IsPhoneNumber(null) // Valida que el teléfono sea un número de teléfono válido
+  @IsPhoneNumber(null)
   cellphone: string;
 }

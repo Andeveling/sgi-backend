@@ -27,13 +27,8 @@ export class StoreController {
   }
 
   @Get()
-  public findAll() {
-    return this.storeService.findAll();
-  }
-
-  @Get(':id')
-  public findOne(@Param('id') id: Store['id']) {
-    return this.storeService.findOne(id);
+  public findOne(@GetUser('sub') userId: string) {
+    return this.storeService.findOne(userId);
   }
 
   @Patch(':id')

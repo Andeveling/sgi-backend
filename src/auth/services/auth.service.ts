@@ -10,7 +10,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { HashingService } from './hashing.service';
-import { TokenAccess, PayloadToken } from '../interfaces';
+import { TokenAccessWithUser, PayloadToken } from '../interfaces';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class AuthService {
     }
   }
 
-  public async login(loginDto: LoginDto): Promise<TokenAccess> {
+  public async login(loginDto: LoginDto): Promise<TokenAccessWithUser> {
     const { email, password } = loginDto;
     const user = await this.validateUser({ email, pass: password });
     if (!user) {
@@ -92,7 +92,11 @@ export class AuthService {
       cellphone: user.cellphone,
     };
     const accessToken = await this.jwtService.signAsync(payload);
-    const accessTokenObject: TokenAccess = {
+    const accessTokenObject: TokenAccessWithUser = {
+      name: user.name,
+      email: user.email,
+      cellphone: user.cellphone,
+      roles: user.roles,
       accessToken: `Bearer ${accessToken}`,
     };
     return accessTokenObject;
