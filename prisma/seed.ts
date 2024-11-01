@@ -1,11 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { ProductSeeder } from './seed/product.seed';
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
-    await ProductSeeder();
+    console.log('Seeding data 🌱 here');
   } catch (error) {
     console.log(`Error creating products: ${error}`);
   } finally {

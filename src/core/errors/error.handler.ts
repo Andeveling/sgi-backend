@@ -28,4 +28,18 @@ export class ErrorHandler extends Error {
       throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  public static notFound(message: string) {
+    throw new HttpException(message, HttpStatus.NOT_FOUND);
+  }
+
+  public static badRequest(message: string) {
+    throw new HttpException(message, HttpStatus.BAD_REQUEST);
+  }
+  public static forbidden(message: string) {
+    throw new HttpException(message, HttpStatus.FORBIDDEN);
+  }
+  public static unauthorized(message: string) {
+    throw new HttpException(message, HttpStatus.UNAUTHORIZED);
+  }
 }

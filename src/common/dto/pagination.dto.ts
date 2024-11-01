@@ -6,7 +6,7 @@ export class PaginationDto {
   @IsInt()
   @Min(0) // Offset puede ser 0 si es necesario, dependiendo de tu lógica
   @Type(() => Number)
-  public page: number = 0;
+  public offset: number = 0;
 
   @IsOptional()
   @IsInt()

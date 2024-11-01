@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  BadRequestException,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
@@ -17,15 +18,21 @@ export class AllExceptionFilter extends BaseExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    this.logger.error(
-      `Exception thrown: ${exception instanceof Error ? exception.message : 'Unknown error'}`,
-      exception instanceof Error ? exception.stack : '',
-      `URL: ${request.url}`,
-    );
-
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
-      const message = exception.message;
+
+      let message: string | string[] = exception.message;
+
+      // Manejo específico para errores de validación
+      if (
+        exception instanceof BadRequestException &&
+        this.isValidationError(exception)
+      ) {
+        const validationErrors = (exception.getResponse() as any).message;
+        message = Array.isArray(validationErrors)
+          ? validationErrors
+          : [message];
+      }
 
       response.status(status).json({
         statusCode: status,
@@ -82,6 +89,17 @@ export class AllExceptionFilter extends BaseExceptionFilter {
       err &&
       typeof err.statusCode === 'number' &&
       typeof err.message === 'string'
+    );
+  }
+
+  // Nuevo método para verificar si la excepción es de validación
+  public isValidationError(exception: HttpException): boolean {
+    const response = exception.getResponse();
+    return (
+      typeof response === 'object' &&
+      response !== null &&
+      'message' in response &&
+      Array.isArray((response as any).message)
     );
   }
 }

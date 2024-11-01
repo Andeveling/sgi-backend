@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ProductsModule } from './products/products.module';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { JwtAuthGuard } from './auth/guards';
+import { RolesGuard } from './auth/guards/roles/roles.guard';
+import { AllExceptionFilter } from './core/errors/all-exeption.filter';
+import { StoreModule } from './store/store.module';
+import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
-    ProductsModule,
     UsersModule,
     AuthModule,
-    // Proteccion de ataques de brute force y ataques DDoS
+    StoreModule,
+    CategoriesModule,
     ThrottlerModule.forRoot([
       {
         ttl: 180,
@@ -19,10 +23,18 @@ import { ThrottlerModule } from '@nestjs/throttler';
   ],
   controllers: [],
   providers: [
-    // {
-    //   provide: 'APP_GUARD',
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: 'APP_GUARD',
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: RolesGuard,
+    },
+    {
+      provide: 'APP_FILTER',
+      useClass: AllExceptionFilter,
+    },
   ],
 })
 export class AppModule {}

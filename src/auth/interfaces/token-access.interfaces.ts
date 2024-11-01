@@ -1,4 +1,8 @@
-export interface TokenAccess {
+export interface TokenAccessWithUser {
+  name: string;
+  email: string;
+  cellphone: string;
+  roles: string[];
   accessToken: BearerToken;
 }
 

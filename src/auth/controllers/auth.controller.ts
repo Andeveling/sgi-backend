@@ -6,29 +6,28 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Public } from '../decorators/public/public.decorator';
 import { RegisterDto } from '../dto/register.dto';
+import { LocalGuard } from '../guards/local/local.guard';
 import { AuthService } from '../services/auth.service';
-
+import { LoginDto } from '../dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @UseGuards(AuthGuard('local'))
-  public login(@Body() req: { email: string; password: string }) {
-    const { email, password } = req;
-    console.log('Aca estoy entrando al login');
-    return this.authService.login({ email, password });
+  @Public()
+  @UseGuards(LocalGuard)
+  public login(@Body() login: LoginDto) {
+    return this.authService.login(login);
   }
 
   @Post('register')
+  @Public()
   public register(@Body() registerDto: RegisterDto) {
-    const { name, email, password } = registerDto;
-    return this.authService.register({ name, email, password });
+    return this.authService.register(registerDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('profile')
   public getProfile(@Request() req: Request) {
     return req['user'];

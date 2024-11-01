@@ -1,34 +1,46 @@
-import { IsString, IsNumber, IsPositive, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsDate,
+  Min,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
-  public name: string;
+  name: string;
 
-  @IsNumber()
+  @IsInt()
   @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public buy_price: number;
+  buyPrice: number;
 
-  @IsNumber()
+  @IsInt()
   @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public sell_price: number;
+  sellPrice: number;
+
+  @IsInt()
+  @Min(0)
+  stock: number;
 
   @IsString()
-  public description: string;
+  @IsOptional()
+  description?: string;
+
+  @IsDate()
+  @IsOptional()
+  expiration?: Date;
+
+  @IsInt()
+  @IsOptional()
+  @Min(0)
+  minStock?: number;
 
   @IsString()
-  public image: string;
+  @IsOptional()
+  categoryId?: string;
 
   @IsString()
-  public category: string;
-
-  @IsNumber()
-  @IsPositive()
-  @Min(1)
-  @Type(() => Number)
-  public stock: number;
+  @IsOptional()
+  storeId?: string;
 }
