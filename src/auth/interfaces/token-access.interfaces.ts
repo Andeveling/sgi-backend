@@ -1,9 +1,8 @@
+import { User } from "@prisma/client";
+
 export interface TokenAccessWithUser {
-  name: string;
-  email: string;
-  cellphone: string;
-  roles: string[];
-  accessToken: BearerToken;
+  token: BearerToken;
+  user: Pick<User, 'id' | 'email' | 'cellphone' | "roles" | "name">;
 }
 
 export type BearerToken = `Bearer ${string}`;

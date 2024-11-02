@@ -10,7 +10,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { HashingService } from './hashing.service';
-import { TokenAccessWithUser, PayloadToken } from '../interfaces';
+import { TokenAccessWithUser, PayloadToken, BearerToken } from '../interfaces';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -93,11 +93,14 @@ export class AuthService {
     };
     const accessToken = await this.jwtService.signAsync(payload);
     const accessTokenObject: TokenAccessWithUser = {
-      name: user.name,
-      email: user.email,
-      cellphone: user.cellphone,
-      roles: user.roles,
-      accessToken: `Bearer ${accessToken}`,
+      user: {
+        id: user.id,
+        name: user.name,
+        cellphone: user.cellphone,
+        email: user.email,
+        roles: user.roles,
+      },
+      token: accessToken as BearerToken,
     };
     return accessTokenObject;
   }
