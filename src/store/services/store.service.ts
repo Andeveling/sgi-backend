@@ -19,12 +19,6 @@ export class StoreService extends PrismaClient implements OnModuleInit {
   @Roles('USER')
   public async create(userId: string, createStoreDto: CreateStoreDto) {
     try {
-      // Validamos si el usuario tiene una tienda
-      const user = await this.usersService.findOneById(userId);
-      if (user.storeId) {
-        throw ErrorHandler.createSignatureError('You already have a store');
-      }
-
       const store = await this.store.create({
         data: {
           ...createStoreDto,
@@ -35,7 +29,7 @@ export class StoreService extends PrismaClient implements OnModuleInit {
           },
         },
       });
-
+      await this.usersService.updateIsNew(userId);
       await this.usersService.updateStore(userId, store.id);
 
       return store;

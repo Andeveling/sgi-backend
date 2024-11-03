@@ -30,6 +30,7 @@ export class AuthController {
 
   @Get('profile')
   public getProfile(@Request() req: Request) {
-    return req['user'];
+    const profile = req['user'];
+    return profile;
   }
 }
