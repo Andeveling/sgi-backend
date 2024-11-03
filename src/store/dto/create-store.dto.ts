@@ -11,4 +11,7 @@ export class CreateStoreDto {
   @IsString()
   @IsPhoneNumber(null)
   cellphone: string;
+
+  @IsString()
+  address: string;
 }

@@ -1,3 +1,13 @@
 {
-  "material-icon-theme.activeIconPack": "nest"
+  "material-icon-theme.activeIconPack": "nest",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#440202",
+    "activityBar.background": "#440202",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#035d03",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "sash.hoverBorder": "#440202"
+  },
+  "peacock.color": "#750404"
 }

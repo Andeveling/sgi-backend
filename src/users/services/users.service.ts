@@ -57,4 +57,14 @@ export class UsersService extends PrismaClient implements OnModuleInit {
       },
     });
   }
+  public async updateIsNew(id: User['id']) {
+    return await this.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        isNew: false,
+      },
+    });
+  }
 }

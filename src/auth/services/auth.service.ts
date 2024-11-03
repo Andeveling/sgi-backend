@@ -98,6 +98,7 @@ export class AuthService {
         name: user.name,
         cellphone: user.cellphone,
         email: user.email,
+        isNew: user.isNew,
         roles: user.roles,
       },
       token: accessToken as BearerToken,
