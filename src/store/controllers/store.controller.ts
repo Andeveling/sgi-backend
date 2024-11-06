@@ -14,7 +14,7 @@ import { CreateStoreDto } from '../dto/create-store.dto';
 import { UpdateStoreDto } from '../dto/update-store.dto';
 import { StoreService } from '../services/store.service';
 
-@Controller('store')
+@Controller('stores')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
@@ -24,6 +24,11 @@ export class StoreController {
     @Body() createStoreDto: CreateStoreDto,
   ) {
     return this.storeService.create(userId, createStoreDto);
+  }
+
+  @Get()
+  public findAll(@GetUser('sub') userId: string) {
+    return this.storeService.findAll(userId);
   }
 
   @Get()

@@ -34,31 +34,10 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  public async findAll(
-    paginationDto: PaginationDto,
-  ): Promise<GetAllResponse<Omit<Category, 'storeId'>>> {
-    const { limit, offset } = paginationDto;
+  public async findAll(): Promise<Category[]> {
     try {
-      const categories = await this.category.findMany({
-        take: limit,
-        skip: offset,
-        select: {
-          id: true,
-          name: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-      const totalItems = await this.category.count();
-      if (totalItems === 0) ErrorHandler.notFound('No categories found');
-      const pagination = new Pagination({ limit, offset, totalItems });
-
-      return {
-        status: StatusResponse.Success,
-        message: 'Categories found successfully',
-        data: categories,
-        pagination: pagination.getPaginationInfo(),
-      };
+      const categories = await this.category.findMany();
+      return categories;
     } catch (error) {
       throw error;
     }
@@ -90,17 +69,14 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
   public async update(
     id: Category['id'],
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<UpdateResponse<Omit<Category, 'storeId'>>> {
+  ) {
     const { name, storeId } = updateCategoryDto;
     try {
       const category = await this.category.update({
-        where: { id, storeId },
-        data: { name, storeId },
-        select: {
-          id: true,
-          name: true,
-          createdAt: true,
-          updatedAt: true,
+        where: { id },
+        data: {
+          name,
+          storeId,
         },
       });
       return {

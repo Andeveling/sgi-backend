@@ -1,3 +1,5 @@
+import { Roles } from '@/auth/decorators';
+import { RolesGuard } from '@/auth/guards/roles/roles.guard';
 import {
   Body,
   Controller,
@@ -6,31 +8,28 @@ import {
   Param,
   Patch,
   Post,
-  Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
-import { PaginationDto } from 'src/common';
-import { CategoriesService } from '../services/categories.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { RolesGuard } from '@/auth/guards/roles/roles.guard';
-import { Roles } from '@/auth/decorators';
+import { CategoriesService } from '../services/categories.service';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Roles('ADMIN')
+  @Roles('USER')
   @UseGuards(RolesGuard)
   @Post()
   public create(@Body() createCategoryDto: CreateCategoryDto) {
+    console.log(createCategoryDto);
     return this.categoriesService.create(createCategoryDto);
   }
 
   @Get()
-  public findAll(@Query() paginationDto: PaginationDto) {
-    return this.categoriesService.findAll(paginationDto);
+  public findAll() {
+    return this.categoriesService.findAll();
   }
 
   @Get(':id')

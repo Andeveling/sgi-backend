@@ -38,6 +38,23 @@ export class StoreService extends PrismaClient implements OnModuleInit {
     }
   }
 
+  public async findAll(userId: User['id']) {
+    try {
+      const stores = await this.store.findMany({
+        where: {
+          users: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      });
+      return stores;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async findOne(userId: User['id']) {
     try {
       const user = await this.usersService.findOneById(userId);

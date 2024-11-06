@@ -45,14 +45,13 @@ model Store {
 }
 
 model Category {
-  id        String    @id @default(uuid())
-  name      String
-  storeId   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  store     Store     @relation(fields: [storeId], references: [id])
-  products  Product[]
-
+  id   String @id @default(uuid())
+  name String
+  storeId  String
+  store    Store     @relation(fields: [storeId], references: [id])
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("categories")
 }
 
