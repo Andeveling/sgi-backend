@@ -62,30 +62,33 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
   public async findAllProducts(): Promise<Product[]> {
     try {
-      const products = await this.product.findMany();
+      const products = await this.product.findMany({
+        include: {
+          category: true,
+          store: true,
+        },
+      });
       return products;
     } catch (error) {
       throw error;
     }
   }
 
-  public async findOneProduct(
-    id: Product['id'],
-  ): Promise<GetOneResponse<Product>> {
+  public async findOneProduct(id: Product['id']): Promise<Product> {
     try {
       const product = await this.product.findUnique({
         where: {
           id: id,
         },
+        include: {
+          category: true,
+          store: true,
+        },
       });
       if (!product) {
         ErrorHandler.notFound('No product found');
       }
-      return {
-        status: StatusResponse.Success,
-        message: 'Product found successfully',
-        data: product,
-      };
+      return product;
     } catch (error) {
       throw error;
     }
@@ -94,7 +97,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
   public async updateProduct(
     id: Product['id'],
     updateProductDto: UpdateProductDto,
-  ): Promise<UpdateResponse<Product>> {
+  ): Promise<Product> {
     try {
       const product = await this.product.update({
         where: {
@@ -105,25 +108,17 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       if (!product) {
         ErrorHandler.notFound('No product found');
       }
-      return {
-        status: StatusResponse.Success,
-        message: 'Product updated successfully',
-        data: product,
-      };
+      return product;
     } catch (error) {
       throw error;
     }
   }
 
-  public async removeProduct(id: Product['id']): Promise<RemoveResponse> {
+  public async removeProduct(id: Product['id']): Promise<Product> {
     try {
       const product = await this.product.delete({ where: { id } });
       if (!product) ErrorHandler.notFound('No product found');
-      return {
-        status: StatusResponse.Success,
-        message: 'Product deleted successfully',
-        deleted_id: product.id,
-      };
+      return product;
     } catch (error) {
       throw error;
     }
