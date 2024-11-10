@@ -3,7 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtAuthGuard } from './auth/guards';
 import { RolesGuard } from './auth/guards/roles/roles.guard';
-import { AllExceptionFilter } from './core/errors/all-exeption.filter';
+import { AllExceptionFilter } from './core/errors/all-exception.filter';
 import { StoreModule } from './store/store.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -11,6 +11,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerConfig } from '@/config/mailer.config';
 import { EmailModule } from './email/email.module';
 import { ProductsModule } from './products/products.module';
+import { CustomersModule } from './customers/customers.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 
 
@@ -28,7 +30,9 @@ import { ProductsModule } from './products/products.module';
       },
     ]),
     MailerModule.forRoot(mailerConfig),
-    EmailModule
+    EmailModule,
+    CustomersModule,
+    PrismaModule
   ],
   controllers: [],
   providers: [

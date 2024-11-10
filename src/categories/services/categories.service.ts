@@ -1,14 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Category, PrismaClient } from '@prisma/client';
-import { PaginationDto } from 'src/common';
-import { Pagination } from 'src/common/entities/pagination.entity';
-import { ErrorHandler } from 'src/core/errors/error.handler';
 import {
-  GetAllResponse,
   GetOneResponse,
   RemoveResponse,
-  StatusResponse,
-  UpdateResponse,
+  StatusResponse
 } from 'src/interfaces/api-response.interface';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
