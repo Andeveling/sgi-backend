@@ -7,9 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { envs } from 'src/config';
 import { JwtStrategy, LocalStrategy } from './strategies';
 import { PassportModule } from '@nestjs/passport';
+import { EmailModule } from '@/email/email.module';
 
 @Module({
   imports: [
+    EmailModule,
     PassportModule,
     JwtModule.register({
       global: true,

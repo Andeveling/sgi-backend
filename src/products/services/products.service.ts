@@ -60,25 +60,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  public async findAllProducts(
-    paginationDto: PaginationDto,
-  ): Promise<GetAllResponse<Product>> {
+  public async findAllProducts(): Promise<Product[]> {
     try {
-      const { offset, limit } = paginationDto;
-      const totalItems = await this.product.count();
-      if (totalItems === 0) ErrorHandler.notFound('No products found');
-      const pagination = new Pagination({ limit, offset, totalItems });
-
-      const products = await this.product.findMany({
-        skip: offset,
-        take: limit,
-      });
-      return {
-        status: StatusResponse.Success,
-        message: 'Products found successfully', // Mensaje de respuesta
-        data: products, // Datos de la respuesta
-        pagination: pagination.getPaginationInfo(), // Datos de paginación
-      };
+      const products = await this.product.findMany();
+      return products;
     } catch (error) {
       throw error;
     }

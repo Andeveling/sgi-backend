@@ -20,12 +20,13 @@ export class ProductsController {
 
   @Post()
   public createProduct(@Body() createProductDto: CreateProductDto) {
+    console.log(createProductDto);
     return this.productsService.createProduct(createProductDto);
   }
 
   @Get()
-  public findAllProducts(@Query() paginationDto: PaginationDto) {
-    return this.productsService.findAllProducts(paginationDto);
+  public findAllProducts() {
+    return this.productsService.findAllProducts();
   }
 
   @Get(':id')

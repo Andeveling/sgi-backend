@@ -64,11 +64,13 @@ model Product {
   description String?
   expiration  DateTime?
   minStock    Int?
-  categoryId  String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   movements   Movement[]
+  
+  categoryId  String
   category    Category   @relation(fields: [categoryId], references: [id])
+
   storeId     String
   store       Store      @relation(fields: [storeId], references: [id])
 

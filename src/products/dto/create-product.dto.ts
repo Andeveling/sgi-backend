@@ -6,6 +6,7 @@ import {
   IsDate,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
   @IsString()
@@ -29,6 +30,7 @@ export class CreateProductDto {
 
   @IsDate()
   @IsOptional()
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
   expiration?: Date;
 
   @IsInt()
