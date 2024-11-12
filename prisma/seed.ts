@@ -10,6 +10,7 @@ import {
 import { hash } from 'bcrypt';
 import { fCategories } from './factories/categories.factory';
 import { fProducts } from './factories/products.factory';
+import { fCustomers } from './factories/customers.factory';
 
 const prisma = new PrismaClient();
 
@@ -32,9 +33,9 @@ async function main() {
       const admin = await prisma.user.create({
         data: {
           name: 'Andres Parra',
-          email: 'andres@mail.com',
+          email: 'andeveling@gmail.com',
           cellphone: '987654321',
-          password: await hash('AD12345B', 10),
+          password: await hash('A123456B', 10),
           roles: [Role.ADMIN, Role.SUPER_ADMIN],
           isNew: false,
         },
@@ -92,21 +93,17 @@ async function main() {
       });
 
       // Crear cliente
-      const customer1 = await prisma.customer.create({
-        data: {
-          name: 'Jane Doe',
-          email: 'janedoe@example.com',
-          cellphone: '1122334455',
-          identification: 'ID123456789',
-        },
+      const customers = await prisma.customer.createManyAndReturn({
+        data: fCustomers,
       });
+
 
       // Crear factura e ítems de factura
       await prisma.invoice.create({
         data: {
           invoiceNumber: 'INV001',
           totalAmount: 500,
-          customer: { connect: { id: customer1.id } },
+          customer: { connect: { id: faker.helpers.arrayElement(customers).id } },
           store: { connect: { id: mainStore.id } },
           date: new Date(),
           status: InvoiceStatus.PENDING,

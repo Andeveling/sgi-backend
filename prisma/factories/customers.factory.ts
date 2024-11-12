@@ -1,13 +1,23 @@
 import { faker } from '@faker-js/faker';
 
-const createRandomCustomer = () => {
-  const customer = {
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-    cellphone: faker.helpers.fromRegExp(/\+1-\d{3}-\d{3}-\d{4}/),
-    identification: faker.vehicle.vin(),
-  };
-  return customer;
+const generateUniquePhoneNumbers = (count: number) => {
+  return faker.helpers.uniqueArray(
+    () => faker.helpers.fromRegExp(/\+57 3\d{2} \d{3} \d{4}/), // Usa el patrón de Colombia (+57 3## ### ####)
+    count,
+  );
 };
 
-export const fCustomers = faker.helpers.multiple(createRandomCustomer, { count: 20 });
+const createRandomCustomer = (phoneNumber: string) => {
+  return {
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    cellphone: phoneNumber,
+    identification: faker.vehicle.vin(),
+  };
+};
+
+const uniquePhoneNumbers = generateUniquePhoneNumbers(20);
+
+export const fCustomers = uniquePhoneNumbers.map((phone) =>
+  createRandomCustomer(phone),
+);
