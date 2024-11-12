@@ -6,7 +6,9 @@ import { AllExceptionFilter } from './core/errors/all-exception.filter';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   const logger = new Logger('Bootstrap');
 
   // Helmet para seguridad
@@ -23,6 +25,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Pipe, Middleware y Filter, Interceptors, Guards
 
   // Habilitar CORS con origen específico
   app.enableCors({

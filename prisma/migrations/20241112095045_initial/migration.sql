@@ -1,11 +1,14 @@
 -- CreateEnum
+CREATE TYPE "InvoiceStatus" AS ENUM ('PENDING', 'PAID');
+
+-- CreateEnum
 CREATE TYPE "StatusEnum" AS ENUM ('ACTIVE', 'INACTIVE');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('USER', 'VENDOR', 'STOCK_MANAGER', 'ADMIN', 'SUPER_ADMIN');
 
 -- CreateEnum
-CREATE TYPE "MovementType" AS ENUM ('PURCHASE', 'RETURN', 'TRANSFER_IN', 'SALE', 'DEFECTIVE', 'TRANSFER_OUT');
+CREATE TYPE "MovementType" AS ENUM ('INITIAL_STOCK', 'PURCHASE', 'RETURN', 'TRANSFER_IN', 'SALE', 'DEFECTIVE', 'TRANSFER_OUT');
 
 -- CreateEnum
 CREATE TYPE "NotificationType" AS ENUM ('INFO', 'SUCCESS', 'WARNING', 'ERROR');
@@ -18,6 +21,7 @@ CREATE TABLE "users" (
     "cellphone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "roles" "Role"[] DEFAULT ARRAY['USER']::"Role"[],
+    "isNew" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "storeId" TEXT,
@@ -31,6 +35,7 @@ CREATE TABLE "stores" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "cellphone" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
     "status" "StatusEnum" NOT NULL DEFAULT 'ACTIVE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -58,13 +63,27 @@ CREATE TABLE "products" (
     "stock" INTEGER NOT NULL DEFAULT 0,
     "description" TEXT,
     "expiration" TIMESTAMP(3),
-    "minStock" INTEGER,
-    "categoryId" TEXT NOT NULL,
+    "maxStock" INTEGER NOT NULL DEFAULT 10,
+    "minStock" INTEGER NOT NULL DEFAULT 1,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "categoryId" TEXT NOT NULL,
     "storeId" TEXT NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "customers" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "cellphone" TEXT NOT NULL,
+    "identification" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -73,8 +92,8 @@ CREATE TABLE "movements" (
     "type" "MovementType" NOT NULL,
     "quantity" INTEGER NOT NULL,
     "productId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "movements_pkey" PRIMARY KEY ("id")
 );
@@ -122,7 +141,9 @@ CREATE TABLE "Invoice" (
     "invoiceNumber" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "totalAmount" INTEGER NOT NULL,
+    "status" "InvoiceStatus" NOT NULL DEFAULT 'PENDING',
     "storeId" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -147,7 +168,13 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "users_cellphone_key" ON "users"("cellphone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_storeId_key" ON "users"("storeId");
+CREATE UNIQUE INDEX "customers_email_key" ON "customers"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "customers_cellphone_key" ON "customers"("cellphone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "customers_identification_key" ON "customers"("identification");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Invoice_invoiceNumber_key" ON "Invoice"("invoiceNumber");
@@ -175,6 +202,9 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_userId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "InvoiceItem" ADD CONSTRAINT "InvoiceItem_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

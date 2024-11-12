@@ -6,7 +6,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id            String         @id @default(uuid())
   name          String
@@ -18,7 +17,7 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[]
-  storeId       String?        @unique
+  storeId       String?        
   store         Store?         @relation(fields: [storeId], references: [id])
 
   @@map("users")
@@ -70,24 +69,25 @@ model Product {
   updatedAt   DateTime   @updatedAt
   movements   Movement[]
 
-  categoryId String
+  categoryId String 
   category   Category @relation(fields: [categoryId], references: [id])
 
-  storeId String
+  storeId String 
   store   Store  @relation(fields: [storeId], references: [id])
 
   @@map("products")
 }
 
 model Customer {
-  id              String @id @default(uuid())
-  name            String
-  email           String @unique
-  cellphone       String @unique
-  indentification String @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  invoices   Invoice[]
+  id             String    @id @default(uuid())
+  name           String   
+  email          String    @unique
+  cellphone      String    @unique
+  identification String    @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  invoices       Invoice[]
+
   @@map("customers")
 }
 
@@ -98,24 +98,26 @@ model Movement {
   productId String
   product   Product      @relation(fields: [productId], references: [id])
 
-  updatedAt DateTime     @updatedAt
-  createdAt DateTime     @default(now())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
   @@map("movements")
 }
 
 model Notification {
-  id        String           @id @default(uuid())
-  title     String
-  message   String
-  type      NotificationType
-  isRead    Boolean          @default(false)
-  storeId   String
-  userId    String
-  store     Store            @relation(fields: [storeId], references: [id])
-  user      User             @relation(fields: [userId], references: [id])
+  id      String           @id @default(uuid())
+  title   String
+  message String
+  type    NotificationType
+  isRead  Boolean          @default(false)
+  storeId String
+  userId  String
+  store   Store            @relation(fields: [storeId], references: [id])
+  user    User             @relation(fields: [userId], references: [id])
 
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("notifications")
 }
 
@@ -124,7 +126,7 @@ model Expense {
   description String
   amount      Int
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 }
 
 model Income {
@@ -132,7 +134,7 @@ model Income {
   description String
   amount      Int
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 }
 
 model Invoice {
@@ -140,9 +142,10 @@ model Invoice {
   invoiceNumber String   @unique
   date          DateTime @default(now())
   totalAmount   Int
+  status        InvoiceStatus @default(PENDING)
 
   storeId String
-  stores  Store  @relation(fields: [storeId], references: [id])
+  store   Store  @relation(fields: [storeId], references: [id])
 
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id])
@@ -150,16 +153,21 @@ model Invoice {
   InvoiceItem InvoiceItem[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model InvoiceItem {
-  id          String  @id
+  id          String  @id @default(cuid())
   description String
   quantity    Int
   price       Int
   invoiceId   String
   Invoice     Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
 }
 
 enum StatusEnum {

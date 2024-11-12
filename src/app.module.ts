@@ -14,8 +14,6 @@ import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { PrismaModule } from './prisma/prisma.module';
 
-
-
 @Module({
   imports: [
     UsersModule,
@@ -23,6 +21,9 @@ import { PrismaModule } from './prisma/prisma.module';
     StoreModule,
     CategoriesModule,
     ProductsModule,
+    EmailModule,
+    CustomersModule,
+    PrismaModule,
     ThrottlerModule.forRoot([
       {
         ttl: 180,
@@ -30,9 +31,6 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     ]),
     MailerModule.forRoot(mailerConfig),
-    EmailModule,
-    CustomersModule,
-    PrismaModule
   ],
   controllers: [],
   providers: [

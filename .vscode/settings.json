@@ -1,13 +1,22 @@
 {
   "material-icon-theme.activeIconPack": "nest",
   "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#440202",
-    "activityBar.background": "#440202",
+    "activityBar.activeBackground": "#120101",
+    "activityBar.background": "#120101",
     "activityBar.foreground": "#e7e7e7",
     "activityBar.inactiveForeground": "#e7e7e799",
-    "activityBarBadge.background": "#035d03",
+    "activityBarBadge.background": "#055b05",
     "activityBarBadge.foreground": "#e7e7e7",
-    "sash.hoverBorder": "#440202"
+    "sash.hoverBorder": "#120101",
+    "commandCenter.border": "#e7e7e799",
+    "editorGroup.border": "#120101",
+    "panel.border": "#120101",
+    "sideBar.border": "#120101",
+    "titleBar.activeBackground": "#440202",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.border": "#440202",
+    "titleBar.inactiveBackground": "#44020299",
+    "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#750404"
+  "peacock.color": "#440202"
 }

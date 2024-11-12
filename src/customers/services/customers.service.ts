@@ -1,29 +1,67 @@
+import { ErrorHandler } from '@/core/errors/error.handler';
+import { PrismaService } from '@/prisma/services/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
-import { PrismaService } from '@/prisma/services/prisma.service';
 
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+  async create(createCustomerDto: CreateCustomerDto) {
+    try {
+      await this.prisma.customer.create({
+        data: createCustomerDto,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all customers`;
+  async findAll() {
+    try {
+
+      const customers = await this.prisma.customer.findMany();
+      return customers;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: string) {
+    try {
+      const customer = await this.prisma.customer.findUnique({
+        where: { id },
+      });
+      return customer;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+    try {
+      await this.prisma.customer.update({
+        where: { id },
+        data: updateCustomerDto,
+      });
+      return updateCustomerDto;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: string) {
+    try {
+      const customer = await this.prisma.customer.delete({
+        where: { id },
+      });
+      if (!customer) {
+        ErrorHandler.notFound('No customer found');
+      }
+      return customer;
+    } catch (error) {
+      throw error;
+    }
   }
 }

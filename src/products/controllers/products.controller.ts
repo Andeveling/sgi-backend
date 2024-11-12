@@ -1,17 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  Query,
+  Get,
+  Param,
+  Patch,
+  Post
 } from '@nestjs/common';
+import { Product } from '@prisma/client';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
-import { PaginationDto } from 'src/common';
-import { Product } from '@prisma/client';
 import { ProductsService } from 'src/products/services/products.service';
 
 @Controller('products')
