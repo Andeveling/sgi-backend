@@ -16,7 +16,7 @@ export class CreateCustomerDto {
   email: string;
 
   @IsString()
-  @Matches(/^\d+$/)
+  @Matches(/^\+?\d+$/)
   @Length(10, 15)
   cellphone: string;
 
