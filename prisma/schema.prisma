@@ -76,6 +76,8 @@ model Product {
   storeId String
   store   Store  @relation(fields: [storeId], references: [id])
 
+  orderItems OrderItem[]
+
   @@map("products")
 }
 
@@ -142,12 +144,13 @@ model Order {
 }
 
 model OrderItem {
-  id          String @id @default(cuid())
-  description String
-  quantity    Int
-  price       Int
-  orderId     String
-  order       Order  @relation(fields: [orderId], references: [id])
+  id        String  @id @default(cuid())
+  quantity  Int
+  productId String
+  orderId   String
+  
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
 }
 
 enum OrderStatus {

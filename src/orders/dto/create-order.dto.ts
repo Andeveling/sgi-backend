@@ -11,16 +11,9 @@ import { OrderStatus } from '@prisma/client';
 import { CreateOrderItemDto } from './create-order-item.dto';
 
 export class CreateOrderDto {
-  @IsOptional()
-  @IsInt()
-  orderNumber?: number;
-
   @IsDate()
   @Type(() => Date)
   date: Date;
-
-  @IsInt()
-  totalAmount: number;
 
   @IsEnum(OrderStatus)
   status: OrderStatus;

@@ -2,11 +2,11 @@ import { IsInt, IsString } from 'class-validator';
 
 export class CreateOrderItemDto {
   @IsString()
-  description: string;
+  productId: string;
+
+  @IsString()
+  orderId: string;
 
   @IsInt()
   quantity: number;
-
-  @IsInt()
-  price: number;
 }

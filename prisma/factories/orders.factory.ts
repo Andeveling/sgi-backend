@@ -4,6 +4,7 @@ import {
   Order,
   OrderItem,
   OrderStatus,
+  Product,
   Store,
 } from '@prisma/client';
 
@@ -35,18 +36,18 @@ export const createManyOrders = (
 
 interface CreateOrderItem extends Omit<OrderItem, 'id'> {}
 
-export const createRandomOrderItem = (orders: Order[] = []): CreateOrderItem => {
+export const createRandomOrderItem = (orders: Order[] = [], products: Product[] = []): CreateOrderItem => {
   return {
-    description: faker.string.alpha(20),
-    price: faker.number.int({ min: 10, max: 500 }),
     quantity: faker.number.int({ min: 1, max: 20 }),
+    productId: faker.helpers.arrayElement(products).id,
     orderId: faker.helpers.arrayElement(orders).id,
   };
 };
 
 export const createManyInvoiceItems = (
   orders: Order[],
+  products: Product[],
   count: number,
 ): CreateOrderItem[] => {
-  return Array.from({ length: count }, () => createRandomOrderItem(orders));
+  return Array.from({ length: count }, () => createRandomOrderItem(orders, products));
 };

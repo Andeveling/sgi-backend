@@ -92,7 +92,7 @@ async function main() {
         data: fOrders,
       });
 
-      const fOrderItems = createManyInvoiceItems(orders, 200);
+      const fOrderItems = createManyInvoiceItems(orders, products, 200);
 
       const ordersItems = await prisma.orderItem.createManyAndReturn({
         data: fOrderItems,
@@ -110,9 +110,8 @@ async function main() {
           orderItems: {
             create: [
               {
-                description: 'Smartphone',
+                productId: faker.helpers.arrayElement(products).id,
                 quantity: 1,
-                price: 500,
               },
             ],
           },
