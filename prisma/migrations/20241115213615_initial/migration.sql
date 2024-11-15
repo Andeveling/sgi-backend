@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "InvoiceStatus" AS ENUM ('PENDING', 'PAID');
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'FULFILLED', 'CANCELLED');
 
 -- CreateEnum
 CREATE TYPE "StatusEnum" AS ENUM ('ACTIVE', 'INACTIVE');
@@ -114,51 +114,29 @@ CREATE TABLE "notifications" (
 );
 
 -- CreateTable
-CREATE TABLE "Expense" (
+CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Expense_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Income" (
-    "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Income_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Invoice" (
-    "id" TEXT NOT NULL,
-    "invoiceNumber" TEXT NOT NULL,
+    "orderNumber" SERIAL NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "totalAmount" INTEGER NOT NULL,
-    "status" "InvoiceStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "storeId" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "InvoiceItem" (
+CREATE TABLE "OrderItem" (
     "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "price" INTEGER NOT NULL,
-    "invoiceId" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "productId" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
 
-    CONSTRAINT "InvoiceItem_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "OrderItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -177,7 +155,7 @@ CREATE UNIQUE INDEX "customers_cellphone_key" ON "customers"("cellphone");
 CREATE UNIQUE INDEX "customers_identification_key" ON "customers"("identification");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Invoice_invoiceNumber_key" ON "Invoice"("invoiceNumber");
+CREATE UNIQUE INDEX "Order_orderNumber_key" ON "Order"("orderNumber");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -201,10 +179,13 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_storeId_fkey" FOREIGN 
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "stores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "InvoiceItem" ADD CONSTRAINT "InvoiceItem_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

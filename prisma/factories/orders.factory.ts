@@ -36,11 +36,18 @@ export const createManyOrders = (
 
 interface CreateOrderItem extends Omit<OrderItem, 'id'> {}
 
-export const createRandomOrderItem = (orders: Order[] = [], products: Product[] = []): CreateOrderItem => {
+export const createRandomOrderItem = (
+  orders: Order[] = [],
+  products: Product[] = [],
+): CreateOrderItem => {
+  const product = faker.helpers.arrayElement(products);
+  const quantity = faker.number.int({ min: 1, max: 20 });
+  const order = faker.helpers.arrayElement(orders);
   return {
-    quantity: faker.number.int({ min: 1, max: 20 }),
-    productId: faker.helpers.arrayElement(products).id,
-    orderId: faker.helpers.arrayElement(orders).id,
+    quantity: quantity,
+    productId: product.id,
+    price: product.sellPrice,
+    orderId: order.id,
   };
 };
 
@@ -49,5 +56,7 @@ export const createManyInvoiceItems = (
   products: Product[],
   count: number,
 ): CreateOrderItem[] => {
-  return Array.from({ length: count }, () => createRandomOrderItem(orders, products));
+  return Array.from({ length: count }, () =>
+    createRandomOrderItem(orders, products),
+  );
 };

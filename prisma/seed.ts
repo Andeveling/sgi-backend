@@ -98,6 +98,7 @@ async function main() {
         data: fOrderItems,
       });
 
+      const productOrderItem = faker.helpers.arrayElement(products);
       await prisma.order.create({
         data: {
           totalAmount: 500,
@@ -110,7 +111,8 @@ async function main() {
           orderItems: {
             create: [
               {
-                productId: faker.helpers.arrayElement(products).id,
+                productId: productOrderItem.id,
+                price: productOrderItem.sellPrice,
                 quantity: 1,
               },
             ],

@@ -1,13 +1,11 @@
+import { OrderStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
-  IsInt,
-  IsOptional,
   IsString,
-  ValidateNested,
+  ValidateNested
 } from 'class-validator';
-import { OrderStatus } from '@prisma/client';
 import { CreateOrderItemDto } from './create-order-item.dto';
 
 export class CreateOrderDto {

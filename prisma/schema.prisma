@@ -144,13 +144,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  quantity  Int
+  id       String @id @default(cuid())
+  quantity Int
+  price    Float
+
   productId String
   orderId   String
-  
-  product   Product @relation(fields: [productId], references: [id])
-  order     Order   @relation(fields: [orderId], references: [id])
+
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
 }
 
 enum OrderStatus {
