@@ -6,8 +6,9 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id            String         @id @default(uuid())
+  id            String         @id @default(cuid())
   name          String
   email         String         @unique
   cellphone     String         @unique
@@ -17,21 +18,21 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[]
-  storeId       String?        
+  storeId       String?
   store         Store?         @relation(fields: [storeId], references: [id])
 
   @@map("users")
 }
 
 model Store {
-  id          String     @id @default(uuid())
+  id          String     @id @default(cuid())
   name        String
   description String?
   cellphone   String
   address     String
   status      StatusEnum @default(ACTIVE)
 
-  Invoice       Invoice[]
+  orders        Order[]
   categories    Category[]
   notifications Notification[]
   products      Product[]
@@ -44,7 +45,7 @@ model Store {
 }
 
 model Category {
-  id        String    @id @default(uuid())
+  id        String    @id @default(cuid())
   name      String
   storeId   String
   store     Store     @relation(fields: [storeId], references: [id])
@@ -56,7 +57,7 @@ model Category {
 }
 
 model Product {
-  id          String     @id @default(uuid())
+  id          String     @id @default(cuid())
   name        String
   buyPrice    Int
   sellPrice   Int
@@ -69,30 +70,30 @@ model Product {
   updatedAt   DateTime   @updatedAt
   movements   Movement[]
 
-  categoryId String 
+  categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  storeId String 
+  storeId String
   store   Store  @relation(fields: [storeId], references: [id])
 
   @@map("products")
 }
 
 model Customer {
-  id             String    @id @default(uuid())
-  name           String   
-  email          String    @unique
-  cellphone      String    @unique
-  identification String    @unique
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  invoices       Invoice[]
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  cellphone      String   @unique
+  identification String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  orders         Order[]
 
   @@map("customers")
 }
 
 model Movement {
-  id        String       @id @default(uuid())
+  id        String       @id @default(cuid())
   type      MovementType
   quantity  Int
   productId String
@@ -105,7 +106,7 @@ model Movement {
 }
 
 model Notification {
-  id      String           @id @default(uuid())
+  id      String           @id @default(cuid())
   title   String
   message String
   type    NotificationType
@@ -121,28 +122,12 @@ model Notification {
   @@map("notifications")
 }
 
-model Expense {
-  id          String   @id @default(uuid())
-  description String
-  amount      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Income {
-  id          String   @id @default(uuid())
-  description String
-  amount      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Invoice {
-  id            String   @id @default(uuid())
-  invoiceNumber String   @unique
-  date          DateTime @default(now())
-  totalAmount   Int
-  status        InvoiceStatus @default(PENDING)
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber Int         @unique @default(autoincrement())
+  date        DateTime    @default(now())
+  totalAmount Int
+  status      OrderStatus @default(PENDING)
 
   storeId String
   store   Store  @relation(fields: [storeId], references: [id])
@@ -150,24 +135,25 @@ model Invoice {
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id])
 
-  InvoiceItem InvoiceItem[]
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model InvoiceItem {
-  id          String  @id @default(cuid())
+model OrderItem {
+  id          String @id @default(cuid())
   description String
   quantity    Int
   price       Int
-  invoiceId   String
-  Invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id])
 }
 
-enum InvoiceStatus {
+enum OrderStatus {
   PENDING
-  PAID
+  FULFILLED
+  CANCELLED
 }
 
 enum StatusEnum {

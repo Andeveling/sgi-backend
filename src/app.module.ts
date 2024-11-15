@@ -13,6 +13,7 @@ import { EmailModule } from './email/email.module';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     ]),
     MailerModule.forRoot(mailerConfig),
+    OrdersModule,
   ],
   controllers: [],
   providers: [

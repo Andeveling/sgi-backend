@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import {
-  InvoiceStatus,
+  OrderStatus,
   MovementType,
   NotificationType,
   PrismaClient,
@@ -9,29 +9,18 @@ import {
 } from '@prisma/client';
 import { hash } from 'bcrypt';
 import { fCategories } from './factories/categories.factory';
-import { fProducts } from './factories/products.factory';
 import { fCustomers } from './factories/customers.factory';
 import {
   createManyInvoiceItems,
-  createManyInvoices,
-} from './factories/invoives.factory';
+  createManyOrders,
+} from './factories/orders.factory';
+import { fProducts } from './factories/products.factory';
 
 const prisma = new PrismaClient();
 
 console.time('seed');
 async function main() {
   await prisma.$transaction(async (prisma) => {
-    await prisma.notification.deleteMany();
-    await prisma.invoice.deleteMany();
-    await prisma.customer.deleteMany();
-    await prisma.movement.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.category.deleteMany();
-    await prisma.store.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.expense.deleteMany();
-    await prisma.income.deleteMany();
-
     try {
       console.log('Seeding data 🌱');
       const admin = await prisma.user.create({
@@ -45,7 +34,6 @@ async function main() {
         },
       });
 
-      // Crear usuarios
       const user1 = await prisma.user.create({
         data: {
           name: 'John Doe',
@@ -98,29 +86,28 @@ async function main() {
         data: fCustomers,
       });
 
-      const fInvoices = createManyInvoices(mainStore.id, customers, 20);
+      const fOrders = createManyOrders(mainStore.id, customers, 20);
 
-      const invoices = await prisma.invoice.createManyAndReturn({
-        data: fInvoices,
+      const orders = await prisma.order.createManyAndReturn({
+        data: fOrders,
       });
 
-      const fInvoiceItems = createManyInvoiceItems(invoices, 200);
+      const fOrderItems = createManyInvoiceItems(orders, 200);
 
-      const invoicesItems = await prisma.invoiceItem.createManyAndReturn({
-        data: fInvoiceItems,
+      const ordersItems = await prisma.orderItem.createManyAndReturn({
+        data: fOrderItems,
       });
 
-      await prisma.invoice.create({
+      await prisma.order.create({
         data: {
-          invoiceNumber: 'INV001',
           totalAmount: 500,
           customer: {
             connect: { id: faker.helpers.arrayElement(customers).id },
           },
           store: { connect: { id: mainStore.id } },
           date: new Date(),
-          status: InvoiceStatus.PENDING,
-          InvoiceItem: {
+          status: OrderStatus.PENDING,
+          orderItems: {
             create: [
               {
                 description: 'Smartphone',
@@ -132,7 +119,6 @@ async function main() {
         },
       });
 
-      // Crear notificación
       await prisma.notification.create({
         data: {
           title: 'Stock Alert',
@@ -140,22 +126,6 @@ async function main() {
           type: NotificationType.WARNING,
           storeId: mainStore.id,
           userId: user1.id,
-        },
-      });
-
-      // Crear gastos
-      await prisma.expense.create({
-        data: {
-          description: 'Electricity Bill',
-          amount: 100,
-        },
-      });
-
-      // Crear ingresos
-      await prisma.income.create({
-        data: {
-          description: 'Product Sale',
-          amount: 500,
         },
       });
 
