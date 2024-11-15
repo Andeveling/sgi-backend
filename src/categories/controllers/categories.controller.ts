@@ -19,7 +19,6 @@ import { CategoriesService } from '../services/categories.service';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Roles('USER')
   @UseGuards(RolesGuard)
   @Post()
   public create(@Body() createCategoryDto: CreateCategoryDto) {

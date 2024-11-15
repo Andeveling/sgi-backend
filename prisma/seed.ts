@@ -11,6 +11,10 @@ import { hash } from 'bcrypt';
 import { fCategories } from './factories/categories.factory';
 import { fProducts } from './factories/products.factory';
 import { fCustomers } from './factories/customers.factory';
+import {
+  createManyInvoiceItems,
+  createManyInvoices,
+} from './factories/invoives.factory';
 
 const prisma = new PrismaClient();
 
@@ -73,8 +77,6 @@ async function main() {
         data: fProducts(categories, mainStore.id),
       });
 
-
-
       // Crear movimientos de inventario
       await prisma.movement.create({
         data: {
@@ -92,18 +94,29 @@ async function main() {
         },
       });
 
-      // Crear cliente
       const customers = await prisma.customer.createManyAndReturn({
         data: fCustomers,
       });
 
+      const fInvoices = createManyInvoices(mainStore.id, customers, 20);
 
-      // Crear factura e ítems de factura
+      const invoices = await prisma.invoice.createManyAndReturn({
+        data: fInvoices,
+      });
+
+      const fInvoiceItems = createManyInvoiceItems(invoices, 200);
+
+      const invoicesItems = await prisma.invoiceItem.createManyAndReturn({
+        data: fInvoiceItems,
+      });
+
       await prisma.invoice.create({
         data: {
           invoiceNumber: 'INV001',
           totalAmount: 500,
-          customer: { connect: { id: faker.helpers.arrayElement(customers).id } },
+          customer: {
+            connect: { id: faker.helpers.arrayElement(customers).id },
+          },
           store: { connect: { id: mainStore.id } },
           date: new Date(),
           status: InvoiceStatus.PENDING,

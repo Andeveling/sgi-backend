@@ -2,11 +2,10 @@ import { faker } from '@faker-js/faker';
 
 const generateUniquePhoneNumbers = (count: number) => {
   return faker.helpers.uniqueArray(
-    () => faker.helpers.fromRegExp(/\+57 3\d{2} \d{3} \d{4}/), // Usa el patrón de Colombia (+57 3## ### ####)
+    () => `57${faker.string.numeric({ length: 10 })}`,
     count,
   );
 };
-
 const createRandomCustomer = (phoneNumber: string) => {
   return {
     name: faker.person.fullName(),
