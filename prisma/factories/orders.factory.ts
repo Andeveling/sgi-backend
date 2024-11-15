@@ -7,6 +7,9 @@ import {
   Store,
 } from '@prisma/client';
 
+const orderStatuses = Object.values(OrderStatus);
+const getRandomOrderStatus = () => faker.helpers.arrayElement(orderStatuses);
+
 const createRandomOrder = (storeId: Store['id'], customers: Customer[]) => {
   const totalAmount = Math.floor(
     faker.number.float({ min: 10, max: 1000, multipleOf: 0.01 }),
@@ -16,7 +19,7 @@ const createRandomOrder = (storeId: Store['id'], customers: Customer[]) => {
     customerId: faker.helpers.arrayElement(customers).id,
     storeId,
     date: new Date(),
-    status: OrderStatus.PENDING,
+    status: getRandomOrderStatus(),
   };
 };
 

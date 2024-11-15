@@ -29,7 +29,7 @@ async function main() {
           email: 'andeveling@gmail.com',
           cellphone: '987654321',
           password: await hash('A123456B', 10),
-          roles: [Role.ADMIN, Role.SUPER_ADMIN],
+          roles: [Role.ADMIN, Role.SUPER_ADMIN, Role.USER],
           isNew: false,
         },
       });
