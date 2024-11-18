@@ -12,6 +12,7 @@ import { RegisterDto } from '../dto/register.dto';
 import { HashingService } from './hashing.service';
 import { TokenAccessWithUser, PayloadToken, BearerToken } from '../interfaces';
 import { User } from '@prisma/client';
+import { ErrorHandler } from '@/core/errors/error.handler';
 
 @Injectable()
 export class AuthService {
@@ -107,5 +108,17 @@ export class AuthService {
       token: accessToken as BearerToken,
     };
     return accessTokenObject;
+  }
+
+  public async validateToken(token: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(token);
+      if (!decodedToken) {
+        ErrorHandler.unauthorized('Invalid token');
+      }
+      return decodedToken;
+    } catch (error) {
+      throw error;
+    }
   }
 }

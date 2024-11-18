@@ -4,12 +4,18 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { envs } from './config/envs';
 import { AllExceptionFilter } from './core/errors/all-exception.filter';
 import helmet from 'helmet';
+import { RedisIoAdapter } from './adapters/redis-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
   const logger = new Logger('Bootstrap');
+  
+  // Redis with adapter
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
 
   // Helmet para seguridad
   app.use(helmet());

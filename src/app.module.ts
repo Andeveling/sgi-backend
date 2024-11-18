@@ -14,6 +14,9 @@ import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { OrdersModule } from './orders/orders.module';
+import { EventsModule } from './events/events.module';
+import { MovementsModule } from './movements/movements.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -33,6 +36,10 @@ import { OrdersModule } from './orders/orders.module';
     ]),
     MailerModule.forRoot(mailerConfig),
     OrdersModule,
+    EventsModule,
+    MovementsModule,
+    RedisModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [

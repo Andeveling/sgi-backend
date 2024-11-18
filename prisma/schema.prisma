@@ -175,13 +175,9 @@ enum Role {
 }
 
 enum MovementType {
-  INITIAL_STOCK
-  PURCHASE
-  RETURN
-  TRANSFER_IN
-  SALE
-  DEFECTIVE
-  TRANSFER_OUT
+  INITIAL_STOCK // When a product is created, a movement is created with this type
+  PURCHASE      // When a order is created, a movement is created with this type
+  SALE          // When a product is sold, a movement is created with this type
 }
 
 enum NotificationType {

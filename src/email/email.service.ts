@@ -1,8 +1,20 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
+import { SendEmailDto } from './dto/sendEmail.dto';
 
 @Injectable()
 export class EmailService {
+  sendEmail(sendEmailDto: SendEmailDto) {
+      return this.mailerService.sendMail({
+        to: sendEmailDto.to,
+        subject: sendEmailDto.subject,
+        template: 'welcome',
+        context: {
+          name: sendEmailDto.name,
+          ctaLink: 'http://localhost:3000',
+        },
+      });
+  }
   private readonly logger = new Logger(EmailService.name);
 
   constructor(private readonly mailerService: MailerService) {}

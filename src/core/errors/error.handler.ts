@@ -42,4 +42,5 @@ export class ErrorHandler extends Error {
   public static unauthorized(message: string) {
     throw new HttpException(message, HttpStatus.UNAUTHORIZED);
   }
+
 }

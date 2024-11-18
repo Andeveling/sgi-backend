@@ -7,8 +7,11 @@ interface EnvVars {
   DATABASE_URL: string;
   ORIGIN: string;
   JWT_SECRET: string;
-  EMAIL: string;
-  PASSWORD: string;
+  EMAIL_ADDRESS: string;
+  EMAIL_PASSWORD: string;
+  REDIS_HOST: string;
+  REDIS_PORT: string;
+  REDIS_PASSWORD: string;
 }
 const envsSchema = Joi.object<EnvVars>({
   HOST: Joi.string().required(),
@@ -16,8 +19,11 @@ const envsSchema = Joi.object<EnvVars>({
   DATABASE_URL: Joi.string().required(),
   ORIGIN: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
-  EMAIL: Joi.string().required(),
-  PASSWORD: Joi.string().required(),
+  EMAIL_ADDRESS: Joi.string().email().required(),
+  EMAIL_PASSWORD: Joi.string().required(),
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.string().required(),
+  REDIS_PASSWORD: Joi.string().empty(''),
 }).unknown(true);
 
 const { error, value } = envsSchema.validate(process.env);
@@ -34,6 +40,9 @@ export const envs = {
   databaseUrl: envVars.DATABASE_URL,
   origin: envVars.ORIGIN,
   secret: envVars.JWT_SECRET,
-  email: envVars.EMAIL,
-  password: envVars.PASSWORD,
+  emailAddress: envVars.EMAIL_ADDRESS,
+  emailPassword: envVars.EMAIL_PASSWORD,
+  redisHost: envVars.REDIS_HOST,
+  redisPort: envVars.REDIS_PORT,
+  redisPassword: envVars.REDIS_PASSWORD,
 };

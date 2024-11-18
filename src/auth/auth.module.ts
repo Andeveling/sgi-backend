@@ -27,5 +27,6 @@ import { EmailModule } from '@/email/email.module';
     LocalStrategy,
     JwtStrategy,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

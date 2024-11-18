@@ -8,12 +8,12 @@ export const mailerConfig: MailerOptions = {
     port: 587,
     secure: false,
     auth: {
-      user: envs.email,
-      pass: envs.password,
+      user: envs.emailAddress,
+      pass: envs.emailPassword,
     },
   },
   defaults: {
-    from: `"No Reply" <${envs.email}>`,
+    from: `"No Reply" <${envs.emailAddress}>`,
   },
   preview: false,
   template: {

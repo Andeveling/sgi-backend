@@ -13,10 +13,12 @@ export class CategoriesService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
   }
+  
 
   public async create(createCategoryDto: CreateCategoryDto) {
     const { storeId, name } = createCategoryDto;
     try {
+      
       const category = await this.category.create({
         data: {
           name,
