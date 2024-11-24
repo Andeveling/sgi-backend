@@ -128,7 +128,7 @@ model Order {
   id          String      @id @default(cuid())
   orderNumber Int         @unique @default(autoincrement())
   date        DateTime    @default(now())
-  totalAmount Int
+  totalAmount Float
   status      OrderStatus @default(PENDING)
 
   storeId String

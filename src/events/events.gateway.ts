@@ -35,7 +35,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket): void {
-    console.log(`Client disconnected: ${client.id}`);
     this.productSubscriptions.forEach((subscribers, productId) => {
       subscribers.delete(client.id);
       if (subscribers.size === 0) {
@@ -50,8 +49,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket, 
   ): WsResponse<string> {
     const { productId } = data;
-      console.log('Event received:', data);
-      console.log('Client ID:', client.id);
     if (!productId || typeof productId !== 'string') {
       client.emit('error', { message: 'Invalid productId' });
       return {

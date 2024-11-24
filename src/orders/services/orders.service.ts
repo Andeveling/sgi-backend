@@ -21,13 +21,17 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto) {
     const { orderItems, ...orderData } = createOrderDto;
     const productsIds = [...new Set(orderItems.map((item) => item.productId))];
-
+    console.log(productsIds);
+    console.log(orderItems);
+    console.log(orderData);
     try {
       const order = await this.prisma.$transaction(async (tx) => {
         const products = await tx.product.findMany({
           where: { id: { in: productsIds } },
           select: { id: true, name: true, sellPrice: true, stock: true },
         });
+
+        console.log(products);
 
         const missingProducts = productsIds.filter(
           (id) => !products.some((product) => product.id === id),
