@@ -15,12 +15,27 @@ const createRandomOrder = (storeId: Store['id'], customers: Customer[]) => {
   const totalAmount = Math.floor(
     faker.number.float({ min: 10, max: 1000, multipleOf: 0.01 }),
   );
+
+  const status = getRandomOrderStatus();
+  let fulfilledAt: Date | null = null;
+  let cancelledAt: Date | null = null;
+
+  if (status === OrderStatus.FULFILLED) {
+    fulfilledAt = new Date();
+  }
+
+  if (status === OrderStatus.CANCELLED) {
+    cancelledAt = new Date();
+  }
+
   return {
     totalAmount,
     customerId: faker.helpers.arrayElement(customers).id,
     storeId,
+    fulfilledAt,
+    cancelledAt,
     date: new Date(),
-    status: getRandomOrderStatus(),
+    status,
   };
 };
 
@@ -43,6 +58,8 @@ export const createRandomOrderItem = (
   const product = faker.helpers.arrayElement(products);
   const quantity = faker.number.int({ min: 1, max: 20 });
   const order = faker.helpers.arrayElement(orders);
+  order.totalAmount = order.totalAmount + product.sellPrice * quantity;
+
   return {
     quantity: quantity,
     productId: product.id,

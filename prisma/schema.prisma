@@ -100,7 +100,6 @@ model Movement {
   quantity  Int
   productId String
   product   Product      @relation(fields: [productId], references: [id])
-
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
@@ -136,6 +135,9 @@ model Order {
 
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id])
+
+  fulfilledAt DateTime?
+  cancelledAt DateTime?
 
   orderItems OrderItem[]
 

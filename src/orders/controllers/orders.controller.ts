@@ -40,4 +40,14 @@ export class OrdersController {
   remove(@Param('id') id: Order['id']) {
     return this.ordersService.remove(id);
   }
+
+  @Patch(':id/fulfill')
+  fulfill(@Param('id') id: Order['id']) {
+    return this.ordersService.fulfill(id);
+  }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id') id: Order['id']) {
+    return this.ordersService.cancel(id);
+  }
 }

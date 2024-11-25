@@ -5,8 +5,8 @@ export class CreateOrderItemDto {
   @IsString()
   productId: string;
 
-  @IsNumber({ maxDecimalPlaces: 2 }) // Permitir hasta 2 decimales
-  @Type(() => Number) // Transforma el valor a un número
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Type(() => Number) 
   price: number;
 
   @IsInt()

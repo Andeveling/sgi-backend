@@ -2,10 +2,13 @@ import { ErrorHandler } from '@/core/errors/error.handler';
 import { PrismaService } from '@/prisma/services/prisma.service';
 import { ProductsService } from '@/products/services/products.service';
 import { Injectable } from '@nestjs/common';
-import { MovementType, Order } from '@prisma/client';
+import { MovementType, Order, OrderStatus } from '@prisma/client';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
-import { EventsGateway, MultipleProductDataNotification } from '@/events/events.gateway';
+import {
+  EventsGateway,
+  MultipleProductDataNotification,
+} from '@/events/events.gateway';
 import { RedisService } from '@/redis/services/redis.service';
 
 @Injectable()
@@ -92,12 +95,12 @@ export class OrdersService {
         select: { id: true, name: true, stock: true },
       });
 
-     const updatedProductsMultiple: MultipleProductDataNotification = {
-       products: updatedProducts.map((product) => ({
-         productId: product.id,
-         newStock: product.stock,
-       })),
-     };
+      const updatedProductsMultiple: MultipleProductDataNotification = {
+        products: updatedProducts.map((product) => ({
+          productId: product.id,
+          newStock: product.stock,
+        })),
+      };
 
       try {
         this.eventsGateway.notifyProductsStockUpdate(updatedProductsMultiple);
@@ -127,6 +130,7 @@ export class OrdersService {
     try {
       const order = await this.prisma.order.findUnique({
         where: { id },
+        include: { orderItems: true },
       });
       return order;
     } catch (error) {
@@ -157,6 +161,84 @@ export class OrdersService {
       return this.prisma.order.delete({
         where: { id },
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fulfill(id: Order['id']) {
+    try {
+      const order = await this.prisma.order.findUnique({
+        where: { id },
+        include: { orderItems: true },
+      });
+
+      if (!order) {
+        ErrorHandler.notFound('Order not found');
+      }
+
+      const updatedOrder = await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: OrderStatus.FULFILLED,
+          fulfilledAt: new Date(),
+          orderItems: {
+            updateMany: {
+              where: { quantity: { gt: 0 } },
+              data: { quantity: { decrement: 1 } },
+            },
+          },
+        },
+        include: { orderItems: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async cancel(id: Order['id']) {
+    try {
+      const order = await this.prisma.order.findUnique({
+        where: { id },
+        include: { orderItems: true },
+      });
+      if (!order) {
+        ErrorHandler.notFound('Order not found');
+      }
+      const updatedOrder = await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: OrderStatus.CANCELLED,
+          cancelledAt: new Date(),
+          orderItems: {
+            updateMany: {
+              where: { quantity: { gt: 0 } },
+              data: { quantity: { decrement: 1 } },
+            },
+          },
+        },
+        include: { orderItems: true },
+      });
+      const updatedProducts = await this.prisma.product.findMany({
+        where: {
+          id: { in: updatedOrder.orderItems.map((item) => item.productId) },
+        },
+      });
+      const updatedProductsMultiple: MultipleProductDataNotification = {
+        products: updatedProducts.map((product) => ({
+          productId: product.id,
+          newStock: product.stock,
+        })),
+      };
+      try {
+        this.eventsGateway.notifyProductsStockUpdate(updatedProductsMultiple);
+      } catch (error) {
+        console.error('Error emitting stock update event:', error);
+      }
+      return {
+        message: 'Order cancelled successfully',
+        order,
+      };
     } catch (error) {
       throw error;
     }

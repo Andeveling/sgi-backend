@@ -8,7 +8,7 @@ CREATE TYPE "StatusEnum" AS ENUM ('ACTIVE', 'INACTIVE');
 CREATE TYPE "Role" AS ENUM ('USER', 'VENDOR', 'STOCK_MANAGER', 'ADMIN', 'SUPER_ADMIN');
 
 -- CreateEnum
-CREATE TYPE "MovementType" AS ENUM ('INITIAL_STOCK', 'PURCHASE', 'RETURN', 'TRANSFER_IN', 'SALE', 'DEFECTIVE', 'TRANSFER_OUT');
+CREATE TYPE "MovementType" AS ENUM ('INITIAL_STOCK', 'PURCHASE', 'SALE');
 
 -- CreateEnum
 CREATE TYPE "NotificationType" AS ENUM ('INFO', 'SUCCESS', 'WARNING', 'ERROR');
@@ -118,10 +118,12 @@ CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "orderNumber" SERIAL NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "totalAmount" INTEGER NOT NULL,
+    "totalAmount" DOUBLE PRECISION NOT NULL,
     "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "storeId" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
+    "fulfilledAt" TIMESTAMP(3),
+    "cancelledAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
