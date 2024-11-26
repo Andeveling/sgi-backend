@@ -21,6 +21,9 @@ model User {
   storeId       String?
   store         Store?         @relation(fields: [storeId], references: [id])
 
+  // Esto solo aplica a los super admins
+  boards Board[]
+  tasks  Task[]
   @@map("users")
 }
 
@@ -187,4 +190,53 @@ enum NotificationType {
   SUCCESS
   WARNING
   ERROR
+}
+
+
+
+
+// ------------------//
+//----TrelloBoard----//
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  columnId    String
+  column      Column   @relation(fields: [columnId], references: [id])
+  position    Int      @default(0) // Para gestionar el orden de las tareas
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String? // Tarea asignada a un usuario (opcional)
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("tasks")
+}
+
+
+model Column {
+  id        String   @id @default(cuid())
+  title     String
+  position  Int      @default(0) // Para gestionar el orden de las columnas
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id])
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("columns")
+}
+
+model Board {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  userId      String?     // Asociado a un usuario (opcional)
+  user        User?       @relation(fields: [userId], references: [id])
+  columns     Column[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("boards")
 }

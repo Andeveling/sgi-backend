@@ -17,6 +17,9 @@ import { OrdersModule } from './orders/orders.module';
 import { EventsModule } from './events/events.module';
 import { MovementsModule } from './movements/movements.module';
 import { RedisModule } from './redis/redis.module';
+import { BoardsModule } from './boards/boards.module';
+import { ColumnsModule } from './columns/columns.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -40,6 +43,9 @@ import { RedisModule } from './redis/redis.module';
     MovementsModule,
     RedisModule,
     EmailModule,
+    BoardsModule,
+    ColumnsModule,
+    TasksModule,
   ],
   controllers: [],
   providers: [
