@@ -20,7 +20,7 @@ export class ColumnsController {
     return this.columnsService.create(createColumnDto);
   }
 
-  @Get()
+  @Get('board/:boardId')
   findAll(@Param('boardId') boardId: string) {
     return this.columnsService.findAll(boardId);
   }

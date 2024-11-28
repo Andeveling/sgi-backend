@@ -8,7 +8,7 @@ export class CreateColumnDto {
   title: string;
 
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   boardId: Board['id'];
 
   @IsNotEmpty()
