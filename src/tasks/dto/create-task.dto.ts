@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-  IsInt,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsInt } from 'class-validator';
 
 import { Type } from 'class-transformer';
 
@@ -18,11 +12,11 @@ export class CreateTaskDto {
   description?: string;
 
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   columnId: string;
 
   @IsOptional()
-  @IsUUID()
+  @IsString()
   userId?: string;
 
   @IsOptional()

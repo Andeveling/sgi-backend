@@ -168,5 +168,10 @@ export class TasksService {
     }
   }
 
-  
+  async findAllTasksByBoard(boardId: string) {
+    return await this.prisma.task.findMany({
+      where: { column: { boardId } },
+      orderBy: { position: 'asc' },
+    });
+  }
 }

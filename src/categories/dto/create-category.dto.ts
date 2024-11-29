@@ -1,12 +1,12 @@
-import { IsString, MaxLength, IsUUID, IsNotEmpty, MinLength } from 'class-validator';
+import { IsString, MaxLength, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CreateCategoryDto {
-  @IsUUID()
+  @IsString()
   storeId: string;
 
   @IsString()
-  @MinLength(3)  
+  @MinLength(3)
   @MaxLength(50)
-  @IsNotEmpty()  
+  @IsNotEmpty()
   name: string;
 }

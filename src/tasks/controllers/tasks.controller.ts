@@ -45,4 +45,9 @@ export class TasksController {
   move(@Body() moveTaskDto: MoveTaskDto) {
     return this.tasksService.moveTask(moveTaskDto);
   }
+
+  @Get("board/:boardId")
+  findAllTasksByBoard(@Param('boardId') boardId: string) {
+    return this.tasksService.findAllTasksByBoard(boardId);
+  }
 }

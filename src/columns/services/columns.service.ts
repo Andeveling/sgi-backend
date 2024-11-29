@@ -174,4 +174,18 @@ export class ColumnsService {
       });
     }
   }
+
+  async findAllTasks(id: string) {
+    const column = await this.prisma.column.findUnique({
+      where: { id },
+    });
+
+    if (!column) {
+      ErrorHandler.notFound(`Column with ID ${id} not found`);
+    }
+
+    return await this.prisma.task.findMany({
+      where: { columnId: id },
+    });
+  }
 }

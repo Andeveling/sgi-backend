@@ -39,4 +39,8 @@ export class ColumnsController {
   remove(@Param('id') id: string) {
     return this.columnsService.remove(id);
   }
+  @Get(':id/tasks')
+  findAllTasks(@Param('id') id: string) {
+    return this.columnsService.findAllTasks(id);
+  }
 }
