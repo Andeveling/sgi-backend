@@ -21,9 +21,12 @@ model User {
   storeId       String?
   store         Store?         @relation(fields: [storeId], references: [id])
 
+  taskLikes    TaskLike[]
+  taskComments TaskComment[]
   // Esto solo aplica a los super admins
-  boards Board[]
-  tasks  Task[]
+  boards       Board[]
+  tasks        Task[]
+
   @@map("users")
 }
 
@@ -103,8 +106,8 @@ model Movement {
   quantity  Int
   productId String
   product   Product      @relation(fields: [productId], references: [id])
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+  updatedAt DateTime     @updatedAt
+  createdAt DateTime     @default(now())
 
   @@map("movements")
 }
@@ -181,8 +184,8 @@ enum Role {
 
 enum MovementType {
   INITIAL_STOCK // When a product is created, a movement is created with this type
-  PURCHASE      // When a order is created, a movement is created with this type
-  SALE          // When a product is sold, a movement is created with this type
+  PURCHASE // When a order is created, a movement is created with this type
+  SALE // When a product is sold, a movement is created with this type
 }
 
 enum NotificationType {
@@ -192,30 +195,43 @@ enum NotificationType {
   ERROR
 }
 
-
-
-
 // ------------------//
 //----TrelloBoard----//
 
 model Task {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   description String?
   columnId    String
-  column      Column   @relation(fields: [columnId], references: [id] , onDelete: Cascade)
-  position    Int      @default(0) 
+  column      Column     @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  position    Int        @default(0)
   status      TaskStatus @default(TODO)
 
   completedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  userId String? // Tarea asignada a un usuario (opcional)
-  user   User?   @relation(fields: [userId], references: [id])
+  likes TaskLike[]
 
+  comments TaskComment[]
+  userId   String? // Tarea asignada a un usuario (opcional)
+  user     User?         @relation(fields: [userId], references: [id])
+
+  @@index([columnId, position], map: "task_column_position_idx")
   @@map("tasks")
-  @@index([columnId, position], map: "task_column_position_idx") 
+}
+
+model TaskLike {
+  id     String @id @default(cuid())
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([taskId, userId]) // Un usuario solo puede dar un "like" por tarea
 }
 
 enum TaskStatus {
@@ -225,30 +241,40 @@ enum TaskStatus {
   CANCELLED
 }
 
+model TaskComment {
+  id        String   @id @default(cuid())
+  taskId    String
+  content   String
+  userId    String
+  author    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Column {
   id        String   @id @default(cuid())
   title     String
-  position  Int      @default(0) 
+  position  Int      @default(0)
   boardId   String
   board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   tasks     Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([boardId, position], map: "column_board_position_idx")
   @@map("columns")
-  @@index([boardId, position], map: "column_board_position_idx") 
 }
 
 model Board {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
-  userId      String?    
-  user        User?       @relation(fields: [userId], references: [id])
-  columns     Column[]   
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  columns     Column[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("boards")
 }

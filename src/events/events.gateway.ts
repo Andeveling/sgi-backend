@@ -87,4 +87,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   notifyProductsStockUpdate(products: MultipleProductDataNotification) {
     this.server.emit('productsStockUpdated', products);
   }
+
+
+  
 }

@@ -35,6 +35,11 @@ export class TasksService {
     return await this.prisma.task.findMany({
       where: { columnId },
       orderBy: { position: 'asc' },
+      include: {
+        comments: {
+          orderBy: { createdAt: 'asc' },
+        },
+      },
     });
   }
 
