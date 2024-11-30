@@ -204,7 +204,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /// TASK COMMENTS ///
-
   @SubscribeMessage('subscribeToTaskComments')
   async handleTaskCommentsSubscribe(
     @MessageBody() data: { taskId: string },
