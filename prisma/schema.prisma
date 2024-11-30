@@ -231,7 +231,7 @@ model TaskLike {
 
   createdAt DateTime @default(now())
 
-  @@unique([taskId, userId]) // Un usuario solo puede dar un "like" por tarea
+  @@unique([taskId, userId], name: "taskId_userId_unique")
 }
 
 enum TaskStatus {

@@ -20,6 +20,8 @@ import { RedisModule } from './redis/redis.module';
 import { BoardsModule } from './boards/boards.module';
 import { ColumnsModule } from './columns/columns.module';
 import { TasksModule } from './tasks/tasks.module';
+import { TaskLikeModule } from './task-like/task-like.module';
+import { TaskCommentsModule } from './task-comments/task-comments.module';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { TasksModule } from './tasks/tasks.module';
     BoardsModule,
     ColumnsModule,
     TasksModule,
+    TaskLikeModule,
+    TaskCommentsModule,
   ],
   controllers: [],
   providers: [
