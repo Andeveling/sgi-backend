@@ -41,8 +41,9 @@ export class TasksController {
     return this.tasksService.remove(id);
   }
 
-  @Patch('move')
+  @Post('move')
   move(@Body() moveTaskDto: MoveTaskDto) {
+    console.log("Move Task", moveTaskDto);
     return this.tasksService.moveTask(moveTaskDto);
   }
 

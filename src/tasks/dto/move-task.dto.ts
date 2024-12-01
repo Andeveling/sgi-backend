@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class MoveTaskDto {
@@ -11,5 +12,6 @@ export class MoveTaskDto {
 
   @IsNotEmpty()
   @IsInt()
+  @Type(() => Number)
   targetPosition: number; // Nueva posición en la columna destino
 }
