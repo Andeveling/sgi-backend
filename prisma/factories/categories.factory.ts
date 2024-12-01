@@ -10,4 +10,4 @@ const createRandomCategory = (storeId: string) => {
 
 
 export const fCategories = (storeI: string) =>
-  faker.helpers.multiple(() => createRandomCategory(storeI), { count: 20 });
+  faker.helpers.multiple(() => createRandomCategory(storeI), { count: 5 });

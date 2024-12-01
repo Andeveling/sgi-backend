@@ -44,6 +44,8 @@ model Store {
   products      Product[]
   users         User[]
 
+  movements Movement[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -108,6 +110,8 @@ model Movement {
   product   Product      @relation(fields: [productId], references: [id])
   updatedAt DateTime     @updatedAt
   createdAt DateTime     @default(now())
+  storeId   String
+  store     Store        @relation(fields: [storeId], references: [id])
 
   @@map("movements")
 }
@@ -184,7 +188,7 @@ enum Role {
 
 enum MovementType {
   INITIAL_STOCK // When a product is created, a movement is created with this type
-  PURCHASE // When a order is created, a movement is created with this type
+  PURCHASE // When a product is sold, a movement is created with this type
   SALE // When a product is sold, a movement is created with this type
 }
 

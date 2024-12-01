@@ -8,7 +8,7 @@ export class TaskLikeService {
   async toggleLike(taskId: string, userId: string) {
     // Verificar si ya existe el "like"
     const existingLike = await this.prisma.taskLike.findUnique({
-      where: { taskId_userId: { taskId, userId } },
+      where: { taskId_userId_unique: { taskId, userId } },
     });
 
     if (existingLike) {
@@ -37,7 +37,7 @@ export class TaskLikeService {
 
   async isStarred(taskId: string, userId: string) {
     const like = await this.prisma.taskLike.findUnique({
-      where: { taskId_userId: { taskId, userId } },
+      where: { taskId_userId_unique: { taskId, userId } },
     });
 
     return { isStarred: !!like };

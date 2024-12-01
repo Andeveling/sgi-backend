@@ -26,5 +26,5 @@ export const createRandomProduct = (
 
 export const fProducts = (categories: Array<Category>, storeId: Store['id']) =>
   faker.helpers.multiple(() => createRandomProduct(categories, storeId), {
-    count: 200,
+    count: 20,
   });

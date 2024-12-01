@@ -71,6 +71,7 @@ async function main() {
           type: MovementType.INITIAL_STOCK,
           quantity: 20,
           productId: faker.helpers.arrayElement(products).id,
+          storeId: mainStore.id
         },
       });
 
@@ -79,6 +80,7 @@ async function main() {
           type: MovementType.PURCHASE,
           quantity: 10,
           productId: faker.helpers.arrayElement(products).id,
+          storeId: mainStore.id
         },
       });
 
@@ -86,13 +88,13 @@ async function main() {
         data: fCustomers,
       });
 
-      const fOrders = createManyOrders(mainStore.id, customers, 20);
+      const fOrders = createManyOrders(mainStore.id, customers, 5);
 
       const orders = await prisma.order.createManyAndReturn({
         data: fOrders,
       });
 
-      const fOrderItems = createManyInvoiceItems(orders, products, 200);
+      const fOrderItems = createManyInvoiceItems(orders, products, 10);
 
       const ordersItems = await prisma.orderItem.createManyAndReturn({
         data: fOrderItems,

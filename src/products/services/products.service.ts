@@ -79,6 +79,7 @@ export class ProductsService {
           tx,
           product.id,
           product.stock,
+          storeId
         );
 
         // Eliminar la caché de productos y productos específicos
