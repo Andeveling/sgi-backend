@@ -9,14 +9,14 @@
     "activityBarBadge.foreground": "#e7e7e7",
     "sash.hoverBorder": "#120101",
     "commandCenter.border": "#e7e7e799",
+    "titleBar.activeBackground": "#440202",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#44020299",
+    "titleBar.inactiveForeground": "#e7e7e799",
     "editorGroup.border": "#120101",
     "panel.border": "#120101",
     "sideBar.border": "#120101",
-    "titleBar.activeBackground": "#440202",
-    "titleBar.activeForeground": "#e7e7e7",
-    "titleBar.border": "#440202",
-    "titleBar.inactiveBackground": "#44020299",
-    "titleBar.inactiveForeground": "#e7e7e799"
+    "titleBar.border": "#440202"
   },
   "peacock.color": "#440202",
   "cSpell.words": [

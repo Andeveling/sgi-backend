@@ -190,6 +190,7 @@ enum MovementType {
   INITIAL_STOCK // When a product is created, a movement is created with this type
   PURCHASE // When a product is sold, a movement is created with this type
   SALE // When a product is sold, a movement is created with this type
+  TRANSFER // When a product is sold, a movement is created with this type
 }
 
 enum NotificationType {

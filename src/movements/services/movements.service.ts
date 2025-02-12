@@ -4,9 +4,7 @@ import { MovementType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class MovementsService {
-
   constructor(private readonly prisma: PrismaService) {}
-
 
   async createInitialStockMovementInTransaction(
     tx: Prisma.TransactionClient,
@@ -24,11 +22,16 @@ export class MovementsService {
     });
   }
 
-
   async findAll(storeId: string) {
     return await this.prisma.movement.findMany({
       where: { storeId },
-      include: { product: true },
+      include: {
+        product: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }
 }

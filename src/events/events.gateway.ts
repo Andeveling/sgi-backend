@@ -1,5 +1,6 @@
 import { TaskCommentsService } from '@/task-comments/task-comments.service';
 import { TaskLikeService } from '@/task-like/task-like.service';
+import { Logger } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -30,6 +31,7 @@ export type MultipleProductDataNotification = {
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+  logger: Logger = new Logger('EventsGateway');
 
   private productSubscriptions: Map<string, Set<string>> = new Map();
   private taskSubscriptions: Map<string, Set<string>> = new Map();
@@ -39,7 +41,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   handleConnection(client: Socket): void {
-    console.log(`Client connected: ${client.id}`);
+    this.logger.log(`Client connected: ${client.id}`);
     this.server.emit('clientConnected', { id: client.id });
   }
 
@@ -57,7 +59,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.taskSubscriptions.delete(taskId);
       }
     });
-    console.log(`Client disconnected: ${client.id}`);
+    this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('subscribeToStockUpdates')
@@ -145,11 +147,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    console.log('toggleTaskLike', taskId, userId);
 
     // Alternar el like
     const { liked } = await this.taskLikeService.toggleLike(taskId, userId);
-    console.log('Like toggled:', liked);
 
     // Notificar a los suscriptores
     this.notifyTaskLikeUpdate(taskId, userId);
